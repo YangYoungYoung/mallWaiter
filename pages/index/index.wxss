@@ -1,0 +1,228 @@
+/**index.wxss**/
+
+page {
+  width: 100%;
+  height: 100%;
+  background-color: #eee;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  width: 100%;
+  background-color: #626262;
+  height: 62rpx;
+  text-align: left;
+  line-height: 62rpx;
+  font-size: 26rpx;
+  color: #fff;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.region{
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: center;
+  line-height: 100%;
+}
+.region-right{
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: center;
+  line-height: 100%;
+}
+
+.radio-group{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  align-items: center;
+}
+
+.radio{
+  height: auto;
+  width: 100%;
+  transform:scale(0.7);
+}
+.scroll {
+  width: 100%;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 82rpx;
+}
+
+.quyu {
+  width: 66rpx;
+  height: 42rpx;
+  margin-left: 51rpx;
+  border: 2rpx solid #fff;
+  text-align: center;
+  line-height: 42rpx;
+}
+
+.area-item {
+  margin-left: 15rpx;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  height: 62rpx;
+  line-height: 62rpx;
+}
+
+.item-area {
+  font-size: 26rpx;
+  height: 62rpx;
+  line-height: 62rpx;
+}
+
+.item-line {
+  height: 62rpx;
+  line-height: 62rpx;
+  margin-left: 10rpx;
+}
+
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+  margin-top: 26rpx;
+}
+
+/* 空闲状态 */
+
+.item-table {
+  width: 174rpx;
+  height: 165rpx;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  border: 1rpx solid #035c86;
+  border-radius: 10rpx;
+  line-height: 165rpx;
+  margin-bottom: 24rpx;
+  margin-left: 54rpx;
+  background-color: #04aaf9;
+}
+
+/* 开桌状态 */
+
+/* .item-table-open {
+  width: 174rpx;
+  height: 165rpx;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  border: 1rpx solid #035c86;
+  border-radius: 10rpx;
+  line-height: 165rpx;
+  margin-bottom: 24rpx;
+  margin-left: 54rpx;
+  background-color: #ea6a76;
+} */
+
+/* 正在吃饭 */
+
+/* .item-table-dinner {
+  width: 174rpx;
+  height: 165rpx;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  border: 1rpx solid #035c86;
+  border-radius: 10rpx;
+  line-height: 165rpx;
+  margin-bottom: 24rpx;
+  margin-left: 54rpx;
+  background-color: #ea6a76;
+} */
+
+.table-content {
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-number {
+  width: 100%;
+  height: 30rpx;
+  font-size: 30rpx;
+  margin-top: -20rpx;
+  color: #fff;
+}
+
+.table-line {
+  width: 117rpx;
+  background-color: #fff;
+  height: 2rpx;
+  margin-top: 80rpx;
+}
+
+.table-text {
+  width: 100%;
+  height: 28rpx;
+  color: #fff;
+  font-size: 26rpx;
+  margin-top: -60rpx;
+}
+
+/* 底部 */
+
+.footer {
+  width: 100%;
+  height: 73rpx;
+  position: fixed;
+  margin-top: 10rpx;
+  bottom: 0;
+  background-color: #c9c9ca;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: row;
+  height: 67rpx;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
+  margin-top: 6rpx;
+  background-color: #fff;
+}
+
+.foot-left {
+  margin-left: 59rpx;
+  font-size: 26rpx;
+  display: flex;
+  flex-direction: row;
+}
+
+.examine-btn {
+  width: 123rpx;
+  height: 49rpx;
+  text-align: center;
+  line-height: 49rpx;
+  font-size: 25rpx;
+  background-color: #0fb0f9;
+  color: #fff;
+  margin-right: 41rpx;
+}

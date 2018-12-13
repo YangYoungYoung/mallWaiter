@@ -1,0 +1,76 @@
+<!--index.wxml-->
+<view class="container">
+  <scroll-view class='scroll' scroll-y style="height:100%;" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll">
+    <view class='title'>
+      <view class='region'>
+        <view class='quyu'>区域</view>
+        <view class="area-item" wx:for="{{regionList}}" wx:key="item">
+          <view class='item-area' bindtap='queryTable' data-id='{{item.id}}'>{{item.name}}</view>
+          <view class='item-line'>|</view>
+        </view>
+        <!-- <view class='item-area' style='margin-left:10rpx;' bindtap='queryTableAll'>全部</view> -->
+      </view>
+
+      <view class='region-right'>
+        <!-- <radio-group class="radio-group" bindchange="radioChange">
+          <radio color="#04aaf9" class="radio" value="{{0}}" checked="{{item.checked}}">
+            <text style='font-size: 28rpx;'>全部</text>
+          </radio>
+        </radio-group> -->
+        <radio-group class="radio-group" bindchange="radioChange">
+          <radio color="#04aaf9" class="radio" wx:for-items="{{seatingNumbers}}" wx:key="item" value="{{item}}" checked="{{item.checked}}">
+            <text >{{item}}人</text>
+          </radio>
+        </radio-group>
+      </view>
+    </view>
+
+    <view class='content'>
+      <block wx:for="{{diningTableList}}" wx:key="item">
+        <!-- 空闲状态 -->
+        <block wx:if="{{item.status==0}}">
+          <view class='item-table' bindtap='showAction' data-status='{{item.status}}'>
+            <view class='table-content'>
+              <text class='table-number'>{{item.name}}</text>
+              <view class='table-line'></view>
+              <text class='table-text'>空闲/{{item.seating_number}}人</text>
+            </view>
+          </view>
+        </block>
+        <!-- 已开桌 -->
+        <block wx:if="{{item.status==1}}">
+          <view class='item-table' style='background-color: #ea6a76;' bindtap='showAction' data-status='{{item.status}}'>
+            <view class='table-content'>
+              <text class='table-number'>{{item.name}}</text>
+              <view class='table-line'></view>
+              <text class='table-text'>已开桌</text>
+            </view>
+          </view>
+        </block>
+        <!-- 用餐中 -->
+        <block wx:if="{{item.status==2}}">
+          <view class='item-table' style='background-color: #f6b37f;' bindtap='showAction' data-status='{{item.status}}'>
+            <view class='table-content'>
+              <text class='table-number'>{{item.name}}</text>
+              <view class='table-line'></view>
+              <text class='table-text'>进行中</text>
+            </view>
+          </view>
+        </block>
+      </block>
+    </view>
+  </scroll-view>
+  <view class='footer'>
+    <view class='footer-content'>
+      <view class='foot-left'>
+        当前有
+        <span style='color:red'>0</span>
+        <view>个呼叫服务</view>
+      </view>
+      <view class='foot-right'>
+        <button class='examine-btn'>查看</button>
+      </view>
+    </view>
+  </view>
+  <van-action-sheet show="{{ show }}" actions="{{ actions }}" bind:close="onClose" bind:select="onSelect" cancel-text="取消" overlay="true" close-on-click-overlay="true" bind:cancel="onClose" />
+</view>
