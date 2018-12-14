@@ -1,13 +1,19 @@
 <!--index.wxml-->
 <view class="container">
-  <scroll-view class='scroll' scroll-y style="height:100%;" bindscrolltoupper="upper" bindscrolltolower="lower" bindscroll="scroll">
+  <scroll-view class='scroll' scroll-y style="height:100%;">
     <view class='title'>
       <view class='region'>
-        <view class='quyu'>区域</view>
-        <view class="area-item" wx:for="{{regionList}}" wx:key="item">
+        <view class='quyu'>
+          <picker bindchange="bindPickerChange" value="{{index}}" range="{{regionList}}" range-key="name">
+            <view class="picker">
+              区域：{{regionList[index].name}}
+            </view>
+          </picker>
+        </view>
+        <!-- <view class="area-item" wx:for="{{regionList}}" wx:key="item">
           <view class='item-area' bindtap='queryTable' data-id='{{item.id}}'>{{item.name}}</view>
           <view class='item-line'>|</view>
-        </view>
+        </view> -->
         <!-- <view class='item-area' style='margin-left:10rpx;' bindtap='queryTableAll'>全部</view> -->
       </view>
 
@@ -19,7 +25,7 @@
         </radio-group> -->
         <radio-group class="radio-group" bindchange="radioChange">
           <radio color="#04aaf9" class="radio" wx:for-items="{{seatingNumbers}}" wx:key="item" value="{{item}}" checked="{{item.checked}}">
-            <text >{{item}}人</text>
+            <text>{{item}}人</text>
           </radio>
         </radio-group>
       </view>
@@ -29,7 +35,7 @@
       <block wx:for="{{diningTableList}}" wx:key="item">
         <!-- 空闲状态 -->
         <block wx:if="{{item.status==0}}">
-          <view class='item-table' bindtap='showAction' data-status='{{item.status}}'>
+          <view class='item-table' bindtap='showAction' data-index="{{index}}" data-status='{{item.status}}'>
             <view class='table-content'>
               <text class='table-number'>{{item.name}}</text>
               <view class='table-line'></view>
@@ -39,7 +45,7 @@
         </block>
         <!-- 已开桌 -->
         <block wx:if="{{item.status==1}}">
-          <view class='item-table' style='background-color: #ea6a76;' bindtap='showAction' data-status='{{item.status}}'>
+          <view class='item-table' style='background-color: #ea6a76;' data-index="{{index}}" bindtap='showAction' data-status='{{item.status}}'>
             <view class='table-content'>
               <text class='table-number'>{{item.name}}</text>
               <view class='table-line'></view>
@@ -49,7 +55,7 @@
         </block>
         <!-- 用餐中 -->
         <block wx:if="{{item.status==2}}">
-          <view class='item-table' style='background-color: #f6b37f;' bindtap='showAction' data-status='{{item.status}}'>
+          <view class='item-table' style='background-color: #f6b37f;' data-index="{{index}}" bindtap='showAction' data-status='{{item.status}}'>
             <view class='table-content'>
               <text class='table-number'>{{item.name}}</text>
               <view class='table-line'></view>
@@ -73,4 +79,19 @@
     </view>
   </view>
   <van-action-sheet show="{{ show }}" actions="{{ actions }}" bind:close="onClose" bind:select="onSelect" cancel-text="取消" overlay="true" close-on-click-overlay="true" bind:cancel="onClose" />
+
+  <!--弹窗-->
+  <view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+  <view class="modal-dialog" wx:if="{{showModal}}">
+    <view class="modal-title">就餐人数</view>
+    <view class="modal-content">
+      <view class="modal-input">
+        <input placeholder-class="input-holder" type="number" maxlength="10" bindinput="inputChange" class="input" placeholder="请输入实际就餐人数"></input>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+      <view class="btn-confirm" bindtap="onConfirm" data-status="confirm">确定</view>
+    </view>
+  </view>
 </view>

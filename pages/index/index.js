@@ -6,8 +6,13 @@ var common = require("../../utils/common.js")
 
 Page({
   data: {
+    showModal: false,
+    peopleNumber: '',
+    seatNumber: '',
     regionList: [],
+    diningTableList:[],
     show: false,
+    index: 0,
     actions: [{
         id: 1,
         name: '开台',
@@ -51,8 +56,20 @@ Page({
     ]
   },
 
+  //选择不同的区域
+  bindPickerChange: function(e) {
+    let that = this;
+    console.log('picker发送选择改变，携带值为', e.detail.value);
+    var id = that.data.regionList[e.detail.value].id;
+    console.log('picker发送选择改变，id携带值为', id);
+    that.setData({
+      index: e.detail.value
+    })
+  },
+
   onLoad: function() {
     let that = this;
+    wx.setStorageSync('shopId', 10041);
     that.queryTableAll();
     that.queryParamList();
   },
@@ -113,6 +130,11 @@ Page({
           console.log("获取的信息是：", res.data.msg.regionList);
           var regionList = res.data.msg.regionList;
           var seatingNumbers = res.data.msg.seatingNumbers;
+          var obj = {
+            id: 0,
+            name: "全部"
+          }
+          regionList.unshift(obj);
           that.setData({
             regionList: regionList,
             seatingNumbers: seatingNumbers
@@ -173,7 +195,11 @@ Page({
 
   //桌位人数的单选按钮组
   radioChange: function(e) {
-    console.log('radio发生change事件，携带value值为：', e.detail.value)
+    console.log('radio发生change事件，携带value值为：', e.detail.value);
+    let that = this;
+    that.setData({
+      seatNumber: e.detail.value
+    })
   },
 
   //关闭actionSheet
@@ -185,14 +211,56 @@ Page({
   //选择actionSheet
   onSelect(event) {
     console.log(event.detail.id);
-    
+    var id = event.detail.id;
+    var that = this;
+    switch (id) {
+      case 1:
+        //当前为开台的时候,弹出就餐人数的弹窗
+        that.showDialogBtn();
+        break;
+      case 2:
+        //当前为点餐，跳转到点餐的页面
+        console.log("当前为点餐，跳转到点餐的页面");
+
+        break;
+      case 3:
+        //当前为加餐
+        console.log("当前为加餐");
+        break;
+      case 4:
+        //当前为划菜
+        console.log("当前为划菜");
+        break;
+      case 5:
+        //当前为起菜
+        console.log("当前为起菜");
+        break;
+      case 6:
+        //当前为顾客转台
+        console.log("当前为顾客转台");
+        break;
+      case 7:
+        //当前为订单详情
+        console.log("当前为订单详情");
+        break;
+      case 8:
+        //当前为清台
+        console.log("当前为清台");
+        break;
+    }
+
   },
 
   //弹出action
   showAction(e) {
     var that = this;
     var status = e.currentTarget.dataset.status;
+    var index = e.currentTarget.dataset.index;
+    that.setData({
+      index: index
+    })
     console.log("status is:", status);
+    console.log("index is:", index);
     var actions = that.data.actions;
     //根据桌位状态展示不同的菜单可选项
     if (status == 0) {
@@ -238,5 +306,81 @@ Page({
     this.setData({
       show: true
     });
-  }
+  },
+  /**
+   * 弹窗
+   */
+  showDialogBtn: function() {
+    this.setData({
+      showModal: true
+    })
+  },
+  /**
+   * 弹出框蒙层截断touchmove事件
+   */
+  preventTouchMove: function() {},
+  /**
+   * 隐藏模态对话框
+   */
+  hideModal: function() {
+    this.setData({
+      showModal: false
+    });
+  },
+  /**
+   * 对话框取消按钮点击事件
+   */
+  onCancel: function() {
+    this.hideModal();
+  },
+  /**
+   * 实际就餐人数对话框确认按钮点击事件
+   */
+  onConfirm: function() {
+    this.hideModal();
+   
+  },
+  //开台的接口
+  openTable:function(){
+    let that = this;
+    // let url = "http://192.168.0.146:8083/api/putForward"
+    let url = "api/openTable"
+    let method = "GET"
+    let index = that.data.index;
+    let diningTableList = that.data.diningTableList;
+    let peopleNumber = that.data.peopleNumber;
+    let dining_table_id = diningTableList[index].serial_id;
+    console.log('serial_id is', serial_id);
+    
+    var params = {
+      peopleNumber: peopleNumber
+    }
+    wx.showLoading({
+      title: '加载中...',
+    }),
+      network.POST(url, params, method).then((res) => {
+        wx.hideLoading();
+        //后台交互
+        if (res.data.status == 200) {
+          common.showTip("开台成功", "success");
+        } else {
+          var message = res.data.message
+          common.showTip(message, "loading");
+        }
+      }).catch((errMsg) => {
+        wx.hideLoading();
+        console.log(errMsg); //错误提示信息
+        wx.showToast({
+          title: '网络错误',
+          icon: 'loading',
+          duration: 1500,
+        })
+      });
+  },
+  //获取输入框里面的值
+  inputChange: function(e) {
+    this.setData({
+      peopleNumber: e.detail.value
+    })
+  },
 })
