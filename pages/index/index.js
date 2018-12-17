@@ -3,16 +3,18 @@
 // const app = getApp()
 var network = require("../../utils/network.js")
 var common = require("../../utils/common.js")
-
+var shopId = wx.getStorageSync('shopId');
+// var name = wx.getStorageSync('name');
 Page({
   data: {
-    showModal: false,
-    peopleNumber: '',
-    seatNumber: '',
-    regionList: [],
-    diningTableList:[],
-    show: false,
-    index: 0,
+    showModal: false, //就餐人数弹窗是否显示
+    peopleNumber: '', //实际就餐人数
+    seatNumber: 0, //桌位人数
+    regionList: [], //区域集合
+    diningTableList: [], //桌位集合
+    show: false, //action是否显示
+    index: 0, //桌位索引
+    pickerIndex: 0, //区域选择器索引
     actions: [{
         id: 1,
         name: '开台',
@@ -56,34 +58,81 @@ Page({
     ]
   },
 
-  //选择不同的区域
+  //选择不同的区域来查询桌位
   bindPickerChange: function(e) {
     let that = this;
-    console.log('picker发送选择改变，携带值为', e.detail.value);
+    // console.log('picker发送选择改变，携带值为', e.detail.value);
     var id = that.data.regionList[e.detail.value].id;
     console.log('picker发送选择改变，id携带值为', id);
     that.setData({
-      index: e.detail.value
+      pickerIndex: e.detail.value
     })
+    that.onShow();
   },
 
   onLoad: function() {
-    let that = this;
-    wx.setStorageSync('shopId', 10041);
-    that.queryTableAll();
-    that.queryParamList();
+    // let that = this;
+    // var seatNumber = that.data.seatNumber;
+    // var pickerIndex = that.data.pickerIndex;
+    // console.log("pickerIndex is:", pickerIndex);
+    // console.log("seatNumber is:", seatNumber);
+    // this.queryTable(seatNumber, pickerIndex);
+    // this.queryParamList();
   },
 
-  //查询区域桌位
-  queryTable: function(e) {
-    var regionId = e.currentTarget.dataset.id;
-    console.log("regionId is:", regionId);
+  onShow: function() {
+    let that = this;
+    var seatNumber = that.data.seatNumber;
+    var pickerIndex = that.data.pickerIndex;
+    console.log("pickerIndex is:", pickerIndex);
+    console.log("seatNumber is:", seatNumber);
+    this.queryTable(seatNumber, pickerIndex);
+    this.queryParamList();
+  },
+
+  //查询区域桌位信息
+  queryTable: function(seatNumber, pickerIndex) {
+    // var regionId = e.currentTarget.dataset.id;
+    // console.log("regionId is:", regionId);
     var that = this;
-    var shopId = wx.getStorageSync('shopId');
-    let url = "api/shop/" + shopId + "/diningTable/list"
-    var params = {
-      regionId: regionId
+    var params = {};
+    var regionId = 0;
+    if (pickerIndex != 0) {
+      regionId = that.data.regionList[pickerIndex].id;
+      console.log('regionId is :', regionId);
     }
+    //查看全部的桌位
+    if (seatNumber == 0 && pickerIndex == 0) {
+
+      params = {
+        shopId: shopId
+      }
+    }
+    //查看固定区域的所有桌位
+    else if (pickerIndex != 0 && seatNumber == 0) {
+      params = {
+        shopId: shopId,
+        regionId: regionId
+      }
+    }
+    //查看固定区域的固定桌位
+    else if (pickerIndex != 0 && seatNumber != 0) {
+      params = {
+        shopId: shopId,
+        regionId: regionId,
+        seatingNumber: seatNumber
+      }
+    }
+    //查看固定人数的桌位
+    else if (pickerIndex == 0 && seatNumber != 0) {
+      params = {
+        shopId: shopId,
+        seatingNumber: seatNumber
+      }
+    }
+
+    let url = "api/shop/" + shopId + "/diningTable/list"
+
     let method = "GET";
     wx.showLoading({
         title: '加载中...',
@@ -91,9 +140,12 @@ Page({
       network.POST(url, params, method).then((res) => {
         wx.hideLoading();
         if (res.data.code == 200) {
-          console.log("获取的信息是：", res.data.msg.diningTableList);
+          // console.log("获取的信息是：", res.data.msg.diningTableList);
           // var regionList = res.data.msg.regionList;
-          var diningTableList = res.data.msg.diningTableList;
+          var diningTableList = res.data.msg;
+          if (diningTableList.length==0){
+            common.showTip('暂无数据','loading');
+          }
           that.setData({
             // regionList: regionList,
             diningTableList: diningTableList
@@ -115,10 +167,10 @@ Page({
   //查询区域信息
   queryParamList() {
     var that = this;
-    var shopId = wx.getStorageSync('shopId');
+
     let url = "api/shop/" + shopId + "/diningTable/queryParamList"
     var params = {
-
+      shopId:shopId
     }
     let method = "GET";
     wx.showLoading({
@@ -139,7 +191,7 @@ Page({
             regionList: regionList,
             seatingNumbers: seatingNumbers
           })
-          that.onShow();
+          // that.onShow();
         } else {
           var message = res.data.msg;
           common.showTip(message, "loading");
@@ -156,50 +208,50 @@ Page({
   },
 
   //查询全部
-  queryTableAll: function() {
-    var that = this;
-    var shopId = wx.getStorageSync('shopId');
-    let url = "api/shop/" + shopId + "/diningTable/list"
-    var params = {
+  // queryTableAll: function() {
+  //   var that = this;
+  //   let url = "api/shop/" + shopId + "/diningTable/list"
+  //   var params = {
+  //     shopId: shopId
+  //   }
+  //   let method = "GET";
+  //   wx.showLoading({
+  //       title: '加载中...',
+  //     }),
+  //     network.POST(url, params, method).then((res) => {
+  //       wx.hideLoading();
+  //       if (res.data.code == 200) {
+  //         // console.log("获取的信息是：", res.data.msg.diningTableList);
+  //         // var regionList = res.data.msg.regionList;
+  //         var diningTableList = res.data.msg;
+  //         that.setData({
+  //           // regionList: regionList,
+  //           diningTableList: diningTableList
+  //         })
+  //         // that.onShow();
+  //       } else {
+  //         var message = res.data.msg;
+  //         common.showTip(message, "loading");
+  //       }
+  //     }).catch((errMsg) => {
+  //       wx.hideLoading();
+  //       console.log(errMsg); //错误提示信息
+  //       wx.showToast({
+  //         title: '网络错误',
+  //         icon: 'loading',
+  //         duration: 1500,
+  //       })
+  //     });
+  // },
 
-    }
-    let method = "GET";
-    wx.showLoading({
-        title: '加载中...',
-      }),
-      network.POST(url, params, method).then((res) => {
-        wx.hideLoading();
-        if (res.data.code == 200) {
-          // console.log("获取的信息是：", res.data.msg.diningTableList);
-          // var regionList = res.data.msg.regionList;
-          var diningTableList = res.data.msg;
-          that.setData({
-            // regionList: regionList,
-            diningTableList: diningTableList
-          })
-          that.onShow();
-        } else {
-          var message = res.data.msg;
-          common.showTip(message, "loading");
-        }
-      }).catch((errMsg) => {
-        wx.hideLoading();
-        console.log(errMsg); //错误提示信息
-        wx.showToast({
-          title: '网络错误',
-          icon: 'loading',
-          duration: 1500,
-        })
-      });
-  },
-
-  //桌位人数的单选按钮组
+  //根据桌位人数的单选按钮组查询桌位
   radioChange: function(e) {
     console.log('radio发生change事件，携带value值为：', e.detail.value);
     let that = this;
     that.setData({
       seatNumber: e.detail.value
     })
+    that.onShow();
   },
 
   //关闭actionSheet
@@ -255,6 +307,7 @@ Page({
   showAction(e) {
     var that = this;
     var status = e.currentTarget.dataset.status;
+    //点击桌位的索引
     var index = e.currentTarget.dataset.index;
     that.setData({
       index: index
@@ -332,37 +385,45 @@ Page({
    */
   onCancel: function() {
     this.hideModal();
+    this.openTable();
   },
   /**
    * 实际就餐人数对话框确认按钮点击事件
    */
   onConfirm: function() {
+    this.openTable();
     this.hideModal();
-   
   },
   //开台的接口
-  openTable:function(){
+  openTable: function() {
     let that = this;
-    // let url = "http://192.168.0.146:8083/api/putForward"
+
     let url = "api/openTable"
-    let method = "GET"
+    let method = "PUT"
     let index = that.data.index;
     let diningTableList = that.data.diningTableList;
-    let peopleNumber = that.data.peopleNumber;
-    let dining_table_id = diningTableList[index].serial_id;
+    let peopleNumber = that.data.peopleNumber; //实际就餐人数
+    let serial_id = diningTableList[index].serial_id; //桌位编号
+    let dining_table_id = diningTableList[index].id; //桌位id
+    let table_runnner = wx.getStorageSync('name'); //开桌人
     console.log('serial_id is', serial_id);
-    
     var params = {
-      peopleNumber: peopleNumber
+      dining_table_id: dining_table_id,
+      peopleNumber: peopleNumber,
+      serial_id: serial_id,
+      table_runnner: table_runnner,
+      shopId: shopId
     }
     wx.showLoading({
-      title: '加载中...',
-    }),
+        title: '加载中...',
+      }),
       network.POST(url, params, method).then((res) => {
         wx.hideLoading();
         //后台交互
-        if (res.data.status == 200) {
+        if (res.data.code == 200) {
           common.showTip("开台成功", "success");
+          that.onShow();
+          that.onClose();
         } else {
           var message = res.data.message
           common.showTip(message, "loading");

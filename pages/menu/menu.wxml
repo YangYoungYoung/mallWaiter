@@ -1,0 +1,87 @@
+<!--pages/menu/menu.wxml-->
+<view class='search' style="position:fixed; top:0;width: 100%;">
+  <van-search value="{{ value }}" placeholder="请输入搜索关键词" use-action-slot bind:search="onSearch">
+    <view slot="action" bind:tap="onSearch">搜索</view>
+  </van-search>
+</view>
+<view class="goods">
+  <view class="menu-wrapper">
+    <scroll-view scroll-y="true" style="height: 450px;">
+      <view wx:for="{{goods}}" wx:key='id' class="menu-item border-1px" bindtap="selectMenu" data-item-index="{{index}}">
+        <view class="text">
+          {{item.name}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  <scroll-view scroll-y="true" scroll-into-view="{{toView}}" class="foods-wrapper">
+    <view wx:for="{{goods}}" wx:key='id' class="food-list food-list-hook" wx:for-index="parentIndex">
+      <view id="order{{parentIndex}}" class="title">{{item.name}}</view>
+      <view class='food-content'>
+        <view wx:for="{{item.productList}}" wx:key='id' class="food-item {{select?'selected':''}}" wx:for-item="productList" data-food="{{productList}}" bindtap="showDetail" data-parentIndex="{{parentIndex}}" data-index='{{index}}'>
+
+          <view class='food-name'>{{productList.name}}</view>
+          <view class='food-price'>￥{{productList.unit_price}}</view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!--shopCart-->
+
+  <view class="shopCart">
+    <view class="content">
+      <view class="content-left">
+        <view class="logo-wrapper">
+          <view class="logo highlight">
+            <view class="iconfont icon-gouwuche highlight"></view>
+          </view>
+          <view class="num" wx:if="{{totalCount> 0}}">{{totalCount}}</view>
+        </view>
+        <view class="price highlight">￥{{totalPrice}}</view>
+
+      </view>
+      <view class="content-right" catchtap="toCart">
+        <view class="pay enough" :class="payClass">
+          下一步
+        </view>
+      </view>
+    </view>
+  </view>
+  <view name="fade">
+    <view class="list-mask" wx:if="{{listShow}}" bindtap="hideList"></view>
+  </view>
+
+
+  <!--屏幕背景变暗的背景  -->
+  <view class="commodity_screen" bindtap="hideModal" wx:if="{{showModalStatus}}"></view>
+  <!--弹出框  -->
+  <view animation="{{animationData}}" class="commodity_attr_box" wx:if="{{showModalStatus}}">
+
+    <view class='commodity-title'>
+      <view class='comm-title-left'>
+        <text class='comm-title-name'>{{productList[index].name}}</text>
+        <text class='comm-title-price'>￥{{productList[index].unit_price}}</text>
+      </view>
+      <view class='comm-title-right'>
+        <image class='comm-close' src='../images/close_btn1.png' bindtap='hideModal'></image>
+        <van-stepper custom-class="stepper" value="{{ 1 }}" bind:change="onNumberChange" />
+      </view>
+    </view>
+    <text class='guige-text' style='margin-top: 100rpx;'>规格</text>
+    <input class='guige-input' type="text" bindinput="guigeChange" value='{{productList[index].unit}}'></input>
+    <text class='guige-text' style='margin-top: 28rpx;'>口味</text>
+
+    <view class='taste'>
+      <block wx:for='{{tasetArry}}' wx:key='index'>
+        <van-tag custom-class='taste-tag' plain='{{item.selectable}}' data-index='{{index}}' bindtap="onTagSelcteChange" size="large" type="primary">{{item.name}}</van-tag>
+      </block>
+    </view>
+
+    <view class="modal-input">
+      <input placeholder-class="input-holder" type="text" maxlength="50" bindinput="inputChange" class="input" value='{{remark}}'></input>
+    </view>
+    <button class='submit-btn' form-type='submit'>提交</button>
+  </view>
+
+</view>

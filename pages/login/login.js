@@ -189,9 +189,11 @@ Page({
           wx.hideLoading();
           if (res.data.code == 200) {
             common.showTip("登录成功！", "success");
-            var shopId = res.data.msg.printerListByShop[0].shop_id;
-            if (shopId) {
+            var shopId = res.data.msg.shopId;
+            var name = res.data.msg.name;
+            if (shopId &&name) {
               wx.setStorageSync('shopId', shopId);
+              wx.setStorageSync('name', name);
               console.log('shopId is:', shopId);
               wx.redirectTo({
                 url: '../index/index',

@@ -26,6 +26,9 @@ page {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: fixed;  /* 固定位置 */
+  top: 0;
+  z-index: 2;
 }
 
 .region{
@@ -64,6 +67,8 @@ page {
   align-items: center;
   text-align: center;
   padding-bottom: 82rpx;
+  z-index: 1;
+  padding-top: 70rpx;
 }
 
 .quyu {
@@ -105,7 +110,7 @@ page {
   flex-wrap: wrap;
   align-items: center;
   text-align: center;
-  margin-top: 26rpx;
+  margin-top: 16rpx;
 }
 
 /* 空闲状态 */
@@ -198,6 +203,7 @@ page {
   margin-top: 10rpx;
   bottom: 0;
   background-color: #c9c9ca;
+  z-index: 2;
 }
 
 .footer-content {
