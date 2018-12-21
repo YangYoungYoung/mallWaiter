@@ -1,12 +1,11 @@
-<!--pages/menu/menu.wxml-->
+<!--pages/search/search.wxml-->
 <view class='search' style="position:fixed; top:0;width: 100%;">
-  <van-search value="{{ value }}" placeholder="请输入搜索关键词"  bind:search="onSearch" bind:cancel="onCancel"
-  bind:change="onSearch">
+  <van-search value="{{ searchText }}" placeholder="请输入搜索关键词"  bind:search="onSearch" bind:cancel="onCancel" bind:change="onSearch">
     <!-- <view slot="action" bind:tap="onSearch">搜索</view> -->
   </van-search>
 </view>
 <view class="goods">
-  <view class="menu-wrapper">
+  <!-- <view class="menu-wrapper">
     <scroll-view scroll-y="true" style="height: 450px;">
       <view wx:for="{{goods}}" wx:key='id' class="menu-item border-1px" bindtap="selectMenu" data-item-index="{{index}}">
         <view class="text">
@@ -14,10 +13,9 @@
         </view>
       </view>
     </scroll-view>
-  </view>
+  </view> -->
   <scroll-view scroll-y="true" scroll-into-view="{{toView}}" class="foods-wrapper" style='margin-top:10rpx;'>
     <view wx:for="{{goods}}" wx:key='id' class="food-list food-list-hook" wx:for-index="parentIndex">
-      <view id="order{{parentIndex}}" class="title">{{item.name}}</view>
       <view class='food-content'>
         <view wx:for="{{item.productList}}" wx:key='id' wx:for-item="productList" class="food-item" style="{{productList.count>0?'background-color: #2131f4;':'background-color: #0fb0f9'}}" data-food="{{productList}}" bindtap="showDetail" data-parentIndex="{{parentIndex}}" data-index='{{index}}'>
           <view class='food-name'>{{productList.name}}</view>

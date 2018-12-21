@@ -1,9 +1,13 @@
 {
   "pages":[
-    "pages/menu/menu",
     "pages/index/index",
+    "pages/order/order",
+    "pages/menu/menu",
     "pages/login/login",
-    "pages/logs/logs"
+    "pages/search/search",
+    "pages/cart/cart"
+    
+    
   ],
   "window":{
     "backgroundTextStyle":"light",

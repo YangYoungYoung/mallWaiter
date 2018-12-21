@@ -1,0 +1,23 @@
+<!--pages/order/order.wxml-->
+<view class='container'>
+  <scroll-view class='scroll' scroll-y style="height:100%;">
+    <block wx:for="{{loi}}" wx:key="id">
+      <view class='list-item'>
+        <view class='item-left'>
+          <view class='item-name'>{{item.name}}</view>
+          <van-tag custom-class='taste-tag' plain='{{item.selectable}}' size="large" type="primary">{{item.name}}</van-tag>
+        </view>
+        <view class='item-center'>
+          <view class='taste-text'></view>
+          <view class='return-dishes'></view>
+        </view>
+        <view class='item-right'>
+          <view class='item-price'>￥{{item.unit_price}}</view>
+          <view class='item-price'>/{{item.count}}</view>
+        </view>
+      </view>
+      <view class='line'></view>
+    </block>
+  </scroll-view>
+
+</view>

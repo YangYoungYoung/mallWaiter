@@ -1,0 +1,64 @@
+/* pages/order/order.wxss */
+page{
+  background-color: #eee;
+}
+.container{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+   box-sizing: border-box;
+}
+
+.list-item{
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  height: 156rpx;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: center;
+  line-height: 156rpx;
+
+}
+.item-left{
+  display: flex;
+  flex-direction: column;
+  padding-left: 50rpx;
+}
+.item-name{
+  font-size: 36rpx;
+  color: #636363;
+}
+.taste-tag{
+  margin-top: 59rpx;
+}
+
+.item-center{
+  display: flex;
+  flex-direction: column;
+
+}
+
+.taste-text{
+  color: #57BEF9;
+  font-size: 26rpx;
+}
+.return-dishes{
+  background-color: #a1a1a1;
+  width: 255rpx;
+}
+
+.item-right{
+  display: flex;
+  flex-direction: column;
+
+}
+
+.line{
+  width: 100%;
+  height: 1rpx;
+  background-color:#B8B8B8; 
+}

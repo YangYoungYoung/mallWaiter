@@ -77,7 +77,7 @@ Page({
     // console.log("pickerIndex is:", pickerIndex);
     // console.log("seatNumber is:", seatNumber);
     // this.queryTable(seatNumber, pickerIndex);
-    // this.queryParamList();
+    this.queryParamList();
   },
 
   onShow: function() {
@@ -86,8 +86,8 @@ Page({
     var pickerIndex = that.data.pickerIndex;
     console.log("pickerIndex is:", pickerIndex);
     console.log("seatNumber is:", seatNumber);
-    this.queryTable(seatNumber, pickerIndex);
-    this.queryParamList();
+    that.queryTable(seatNumber, pickerIndex);
+    // this.queryParamList();
   },
 
   //查询区域桌位信息
@@ -273,11 +273,16 @@ Page({
       case 2:
         //当前为点餐，跳转到点餐的页面
         console.log("当前为点餐，跳转到点餐的页面");
-
+        wx.navigateTo({
+          url: '../menu/menu',
+        })
         break;
       case 3:
         //当前为加餐
         console.log("当前为加餐");
+        wx.navigateTo({
+          url: '../menu/menu',
+        })
         break;
       case 4:
         //当前为划菜
