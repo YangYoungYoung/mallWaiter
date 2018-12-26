@@ -1,23 +1,60 @@
 <!--pages/order/order.wxml-->
 <view class='container'>
   <scroll-view class='scroll' scroll-y style="height:100%;">
-    <block wx:for="{{loi}}" wx:key="id">
-      <view class='list-item'>
+    <block wx:for="{{loi}}" wx:key="id" wx:for-item='item'>
+      <view class='list-item' bindtap='onShowAciton' data-index='{{index}}'>
         <view class='item-left'>
-          <view class='item-name'>{{item.name}}</view>
-          <van-tag custom-class='taste-tag' plain='{{item.selectable}}' size="large" type="primary">{{item.name}}</van-tag>
+          <view class='item-name'>{{item.p.name}}</view>
+          <van-tag custom-class='taste-tag' color='{{tagColor}}' size="large" type="primary">{{item.status}}</van-tag>
         </view>
         <view class='item-center'>
           <view class='taste-text'></view>
           <view class='return-dishes'></view>
         </view>
         <view class='item-right'>
-          <view class='item-price'>￥{{item.unit_price}}</view>
-          <view class='item-price'>/{{item.count}}</view>
+          <view class='item-price'>￥{{item.p.unit_price}}X{{item.quantity}}</view>
         </view>
       </view>
       <view class='line'></view>
     </block>
+    <block wx:if="{{description}}">
+      <view class='remark'>
+        <view class='remark-title'>订单备注:</view>
+        <i-input i-class="remark-text" disabled='true' value="{{description}}" type="textarea" mode="wrapped" />
+      </view>
+    </block>
   </scroll-view>
 
+  <view class='footer'>
+    <view class='foot-left'>
+      <view class='left-text'>共 </view>
+      <view class='foot-number'>{{quantity}}</view>
+      <view class='left-text'>份</view>
+    </view>
+
+    <view class='foot-left'>
+      <view class='left-text'>共 </view>
+      <view class='foot-number'>{{totalPrice}} </view>
+      <view class='left-text'>元</view>
+    </view>
+    <view class='foot-right'>
+      <button class='btn' bindtap='add'>加 餐</button>
+      <button class='btn' bindtap='toIndex'>首 页</button>
+    </view>
+  </view>
+  <van-action-sheet show="{{ show }}" actions="{{ actions }}" bind:close="onClose" bind:select="onSelect" cancel-text="取消" overlay="true" close-on-click-overlay="true" bind:cancel="onClose" />
 </view>
+<!--弹窗-->
+    <view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+    <view class="modal-dialog" wx:if="{{showModal}}">
+      <view class="modal-title">退菜原因</view>
+      <view class="modal-content">
+        <view class="modal-input">
+          <input placeholder-class="input-holder" type="text" maxlength="20" bindinput="inputChange" class="input" placeholder="请输入原因"></input>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+        <view class="btn-confirm" bindtap="onConfirm" data-status="confirm">确定</view>
+      </view>
+    </view>

@@ -128,13 +128,13 @@ Page({
    */
   onShow: function() {
     var that = this;
-   let cartArray = wx.getStorageSync('cartResult');
-   if(cartArray){
-     that.setData({
-       cartArray: cartArray
-     })
-     that.totalNumber();
-   }
+    let cartArray = wx.getStorageSync('cartResult');
+    if (cartArray) {
+      that.setData({
+        cartArray: cartArray
+      })
+      that.totalNumber();
+    }
   },
 
   //显示对话框
@@ -272,27 +272,28 @@ Page({
     goods[parentIndex].productList[index].count = num;
     var product = goods[parentIndex].productList[index];
     product.count = num;
-    product.remark = remark;
+    product.description = remark;
+    product.active = true;
     let id = product.id;
     console.log("product price is :", product.unit_price);
     //购物车数组
     let cartArray = that.data.cartArray;
-    let isHas = false;//是否包含
+    let isHas = false; //是否包含
     let cartIndex = 0;
     //遍历查看购物车中是否包含当前菜品
-    for(let i=0;i<cartArray.length;i++){
-        if(id==cartArray[i].id){
-          // cartArray.splice(i, 1, product);
-          isHas = true;
-          cartIndex= i;
-        }
+    for (let i = 0; i < cartArray.length; i++) {
+      if (id == cartArray[i].id) {
+        // cartArray.splice(i, 1, product);
+        isHas = true;
+        cartIndex = i;
+      }
     }
     //包含就替换，否则就添加
-    if(isHas){
+    if (isHas) {
       cartArray.splice(cartIndex, 1, product);
-    }else{
-    //将选中的菜品才加进购物车
-    cartArray.push(product);
+    } else {
+      //将选中的菜品才加进购物车
+      cartArray.push(product);
     }
     console.log("当前购物车的数量:", cartArray.length)
     that.setData({
@@ -315,9 +316,9 @@ Page({
     var id = goods[parentIndex].productList[index].id;
     //购物车数组
     let cartArray = that.data.cartArray;
-    for(let i=0;i<cartArray.length;i++){
-      if(id==cartArray[i].id){
-        cartArray.splice(index,i);
+    for (let i = 0; i < cartArray.length; i++) {
+      if (id == cartArray[i].id) {
+        cartArray.splice(index, i);
       }
     }
     that.setData({
@@ -348,7 +349,7 @@ Page({
     })
   },
   //跳转到购物车
-  toCart:function(){
+  toCart: function() {
     let that = this;
     let cartArray = that.data.cartArray;
     wx.setStorageSync('cartResult', cartArray);
@@ -357,7 +358,7 @@ Page({
     })
   },
   //搜索功能
-  onSearch:function(event){
+  onSearch: function(event) {
     console.log('搜索功能', event.detail);
     let searchText = event.detail;
     wx.navigateTo({

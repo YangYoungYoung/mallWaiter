@@ -255,13 +255,13 @@ Page({
       return false;
     }
   },
-  setGoodsList: function (saveHidden, total, totalCount, allSelect, noSelect, list) {
+  setGoodsList: function(saveHidden, total, totalCount, allSelect, noSelect, list) {
 
     this.setData({
       goodsList: {
         saveHidden: saveHidden,
         totalPrice: total.toFixed(1),
-        totalCount:totalCount,
+        totalCount: totalCount,
         allSelect: allSelect,
         noSelect: noSelect,
         list: list
@@ -291,7 +291,7 @@ Page({
     }
 
     // console.log("====当前价格是===" + this.totalPrice())
-    this.setGoodsList(this.getSaveHide(), this.totalPrice(),  this.totalCount(),!currentAllSelect, this.noSelect(), list);
+    this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.totalCount(), !currentAllSelect, this.noSelect(), list);
   },
   //数量加
   jiaBtnTap: function(e) {
@@ -312,7 +312,7 @@ Page({
     if (index !== "" && index != null) {
       if (list[parseInt(index)].count > 1) {
         list[parseInt(index)].count--;
-        this.setGoodsList(this.getSaveHide(), this.totalPrice(),  this.totalCount(),this.allSelect(), this.noSelect(), list);
+        this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.totalCount(), this.allSelect(), this.noSelect(), list);
       }
     }
   },
@@ -323,7 +323,7 @@ Page({
       var curItem = list[i];
       curItem.active = false;
     }
-    this.setGoodsList(!this.getSaveHide(), this.totalPrice(),  this.totalCount(),this.allSelect(), this.noSelect(), list);
+    this.setGoodsList(!this.getSaveHide(), this.totalPrice(), this.totalCount(), this.allSelect(), this.noSelect(), list);
   },
   //完成
   saveTap: function() {
@@ -348,10 +348,10 @@ Page({
         list.splice(i--, 1);
       }
     }
-    this.setGoodsList(this.getSaveHide(), this.totalPrice(),  this.totalCount(),this.allSelect(), this.noSelect(), list);
+    this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.totalCount(), this.allSelect(), this.noSelect(), list);
   },
   //提交订单
-  toPayOrder: function() {
+  toSubmitOrder: function() {
     var that = this;
     if (this.data.goodsList.noSelect) {
       common.showTip("请选择至少一件商品", "loading");
@@ -369,26 +369,22 @@ Page({
     for (var i = 0; i < shopList.length; i++) {
       //把选择的放进订单存储中
       if (shopList[i].active) {
-        //判断库存
-        if (shopList[i].good_number < shopList[i].number) {
-          common.showTip(shopList[i].name + "商品库存不足", "loading");
-          return;
-        } else {
-          console.log("商品的ID是：" + shopList[i].category_id);
-          //订单id是单独传过来的
-          var order_id = wx.getStorageSync("orderId");
-          var temp = {
-            category_id: shopList[i].category_id,
-            description: shopList[i].description,
-            order_id: order_id,
-            // order_id: "25717603011921208",
-            product_id: shopList[i].product_id,
-            quantity: shopList[i].number,
-            status_id: 0
-          }
-          orderItemList.push(temp);
+
+        console.log("商品的ID是：" + shopList[i].category_id);
+        //订单id是单独传过来的
+        var order_id = wx.getStorageSync("orderId");
+        var temp = {
+          category_id: shopList[i].category_id, // 菜品类别id
+          description: shopList[i].description, //菜品描述
+          order_id: order_id, //订单Id
+          // order_id: "25717603011921208",
+          product_id: shopList[i].id, //菜品id
+          quantity: shopList[i].count,
+          status_id: 0
         }
+        orderItemList.push(temp);
       }
+
     }
     //将选择的商品ID传给服务器生成订单
     // let url = "api/orderItemList"
@@ -494,7 +490,7 @@ Page({
     var list = that.data.goodsList.list;
     var index = that.data.index;
     list[index].description = that.data.remark;
-    list[index].remark = that.data.remark;
+    // list[index].remark = that.data.remark;
     console.log("当前口味为：" + list[index].description + "当前个数：" + index);
     wx.setStorageSync("cartResult", list);
     //口味选项恢复，输入框清空
@@ -585,5 +581,96 @@ Page({
     this.setData({
       textAreaBlur: e.detail.value,
     })
+  },
+  //等叫功能
+  dengJiao: function() {
+    var that = this;
+    if (this.data.goodsList.noSelect) {
+      common.showTip("请选择至少一件商品", "loading");
+      return;
+    }
+    wx.showLoading();
+    // 重新计算价格，判断库存
+
+    var shopList = wx.getStorageSync('cartResult');
+    if (shopList.length == 0) {
+      common.showTip("请选择至少一件商品", "loading");
+      return;
+    }
+    var orderItemList = new Array();
+    for (var i = 0; i < shopList.length; i++) {
+      //把选择的放进订单存储中
+      if (shopList[i].active) {
+
+        console.log("商品的ID是：" + shopList[i].category_id);
+        //订单id是单独传过来的
+        var order_id = wx.getStorageSync("orderId");
+        var temp = {
+          category_id: shopList[i].category_id, // 菜品类别id
+          description: shopList[i].description, //菜品描述
+          order_id: order_id, //订单Id
+          // order_id: "25717603011921208",
+          product_id: shopList[i].id, //菜品id
+          quantity: shopList[i].count,
+          status_id: 0
+        }
+        orderItemList.push(temp);
+      }
+    }
+    let diningTableId = wx.getStorageSync('diningTableId');
+    let orderId = wx.getStorageSync('orderId');
+    let url = "api/dengJiaoQi"
+    var params = {
+      diningTableId: diningTableId,
+      orderItemList: orderItemList,
+      operateType: 1,
+      orderId: orderId
+    }
+    let method = "PUT";
+
+    wx.showLoading({
+        title: '加载中...',
+      }),
+      network.POST(url, params, method).then((res) => {
+        wx.hideLoading();
+        console.log("这里的结果是：" + res.data); //正确返回结果
+       if(res.data.code==200){
+         common.showTip('提交成功','success');
+       }
+      }).catch((errMsg) => {
+        // wx.hideLoading();
+        // console.log(errMsg); //错误提示信息
+        wx.showToast({
+          title: '网络错误',
+          icon: 'loading',
+          duration: 1500,
+        })
+      });
+
+    // var description = that.data.textAreaBlur;
+    // wx.request({
+    //   url: 'https://api.cmdd.tech/api/orderItemList',
+
+    //   data: {
+    //     orderItemList,
+    //     description
+    //   },
+    //   method: 'POST',
+    //   header: {
+    //     'content-type': 'application/json'
+
+    //   },
+    //   success: function (res) {
+    //     console.log("提交返回：" + res.data);
+    //     if (res.data.code == 200) {
+    //       common.showTip("提交成功", 'success');
+    //       that.setData({
+    //         isLotteryCash: res.data.msg.isLotteryCash
+    //       })
+    //       that.navigateToPayOrder();
+    //     }
+    //   }
+    // });
+
   },
 })

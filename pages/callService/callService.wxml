@@ -1,0 +1,19 @@
+<!--pages/callService/callService.wxml-->
+<view class='container'>
+
+  <view class='list'>
+    <block wx:for="{{serviceList}}" wx:key="index">
+      <view class='list-item'>
+        <view class='list-left'>
+          <text class='item-table'>桌号:{{item.dining_table_id}}</text>
+          <text class='item-content'>服务内容:{{item.description}}</text>
+        </view>
+        <view>
+          <button class='take-order' bindtap='receiving' data-index="{{index}}">接单</button>
+        </view>
+      </view>
+      <view class='line'></view>
+    </block>
+  </view>
+
+</view>

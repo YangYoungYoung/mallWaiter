@@ -1,0 +1,60 @@
+/* pages/callService/callService.wxss */
+
+.container {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  align-items: center;
+}
+
+.list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.list-item {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  height: 156rpx;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: left;
+  align-items: center;
+}
+
+.list-left {
+  display: flex;
+  flex-direction: column;
+  font-size: 34rpx;
+  color: #636363;
+  padding-left: 30rpx;
+}
+
+.item-table {
+  margin-top: 30rpx;
+}
+
+.item-content {
+  margin-top: 20rpx;
+}
+
+.take-order {
+  width: 180rpx;
+  height: 80rpx;
+  background-color: #337ab7;
+  color: white;
+  right: 30rpx;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 30rpx;
+}
+
+.line{
+  width: 100%;
+  height: 2rpx;
+  background-color: #eee;
+  margin-top: 20rpx;
+}

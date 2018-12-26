@@ -1,64 +1,148 @@
 /* pages/order/order.wxss */
-page{
+
+page {
   background-color: #eee;
 }
-.container{
+
+.container {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
-   box-sizing: border-box;
+  box-sizing: border-box;
+}
+.scroll{
+  background-color: white;
+  padding-bottom: 100rpx;
 }
 
-.list-item{
+.list-item {
   width: 100%;
   box-sizing: border-box;
   display: flex;
   height: 156rpx;
   flex-direction: row;
   justify-content: space-between;
-  text-align: center;
-  line-height: 156rpx;
-
+  text-align: left;
+  /* line-height: 156rpx; */
 }
-.item-left{
+
+.item-left {
+  height: 100%;
   display: flex;
   flex-direction: column;
   padding-left: 50rpx;
 }
-.item-name{
+
+.item-name {
+  margin-top: 30rpx;
   font-size: 36rpx;
   color: #636363;
-}
-.taste-tag{
-  margin-top: 59rpx;
+  height: auto;
 }
 
-.item-center{
+.taste-tag {
+  margin-top: 15rpx;
+}
+
+.item-center {
   display: flex;
   flex-direction: column;
-
 }
 
-.taste-text{
-  color: #57BEF9;
+.taste-text {
+  color: #57bef9;
   font-size: 26rpx;
 }
-.return-dishes{
+
+.return-dishes {
   background-color: #a1a1a1;
   width: 255rpx;
 }
 
-.item-right{
+.item-right {
+  color: #636363;
+  font-size: 30rpx;
   display: flex;
+  height: 100%;
+  line-height: 156rpx;
   flex-direction: column;
-
+  padding-right: 20rpx; 
 }
 
-.line{
+.line {
   width: 100%;
-  height: 1rpx;
-  background-color:#B8B8B8; 
+  height: 2rpx;
+  background-color: #eee;
+}
+
+.remark-title {
+  width: 100%;
+  font-size: 30rpx;
+  padding: 40rpx 0rpx 0rpx 40rpx;
+}
+
+.footer {
+  width: 100%;
+  height: 101rpx;
+  position: fixed;
+  margin-top: 100rpx;
+  bottom: 0;
+  background-color: #eee;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
+}
+
+.remark {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 100rpx;
+}
+
+.remark-text {
+  width: 630rpx;
+  height: 173rpx;
+  padding-left: 100rpx;
+}
+
+.foot-left {
+  font-size: 30rpx;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: center;
+  padding-left: 40rpx;
+}
+
+.left-text {
+  color: black;
+  margin-right: 10rpx;
+}
+
+.foot-number {
+  color: red;
+  font-size: 34rpx;
+  margin-right: 10rpx;
+}
+
+.foot-right {
+  padding-right: 40rpx;
+  display: flex;
+  flex-direction: row;
+}
+
+.foot-right .btn {
+  width: 126rpx;
+  height: 48rpx;
+  font-size: 28rpx;
+  line-height: 48rpx;
+  background-color: #26a2ff;
+  color: white;
+  margin-left: 30rpx;
 }

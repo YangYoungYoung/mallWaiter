@@ -1,36 +1,36 @@
 <!--index.wxml-->
-<view class="container">
-  
-    <view class='title'>
-      <view class='region'>
-        <view class='quyu'>
-          <picker bindchange="bindPickerChange" value="{{pickerIndex}}" range="{{regionList}}" range-key="name">
-            <view class="picker">
-              区域：{{regionList[pickerIndex].name}}
-            </view>
-          </picker>
-        </view>
-        <!-- <view class="area-item" wx:for="{{regionList}}" wx:key="item">
+<view class="container {{showChangeModal?'noscroll':''}}" style="{{showChangeModal?'height: 100%;overflow: hidden;':''}}">
+
+  <view class='title'>
+    <view class='region'>
+      <view class='quyu'>
+        <picker bindchange="bindPickerChange" value="{{pickerIndex}}" range="{{regionList}}" range-key="name">
+          <view class="picker">
+            区域：{{regionList[pickerIndex].name}}
+          </view>
+        </picker>
+      </view>
+      <!-- <view class="area-item" wx:for="{{regionList}}" wx:key="item">
           <view class='item-area' bindtap='queryTable' data-id='{{item.id}}'>{{item.name}}</view>
           <view class='item-line'>|</view>
         </view> -->
-        <!-- <view class='item-area' style='margin-left:10rpx;' bindtap='queryTableAll'>全部</view> -->
-      </view>
+      <!-- <view class='item-area' style='margin-left:10rpx;' bindtap='queryTableAll'>全部</view> -->
+    </view>
 
-      <view class='region-right'>
-        <!-- <radio-group class="radio-group" bindchange="radioChange">
+    <view class='region-right'>
+      <!-- <radio-group class="radio-group" bindchange="radioChange">
           <radio color="#04aaf9" class="radio" value="{{0}}" checked="{{item.checked}}">
             <text style='font-size: 28rpx;'>全部</text>
           </radio>
         </radio-group> -->
-        <radio-group class="radio-group" bindchange="radioChange">
-          <radio color="#04aaf9" class="radio" wx:for-items="{{seatingNumbers}}" wx:key="item" value="{{item}}" checked="{{item.checked}}">
-            <text>{{item}}人</text>
-          </radio>
-        </radio-group>
-      </view>
+      <radio-group class="radio-group" bindchange="radioChange">
+        <radio color="#04aaf9" class="radio" wx:for-items="{{seatingNumbers}}" wx:key="item" value="{{item.id}}" checked="{{item.checked}}">
+          <text>{{item.name}}</text>
+        </radio>
+      </radio-group>
     </view>
-<scroll-view class='scroll' scroll-y style="height:100%;">
+  </view>
+  <scroll-view class='scroll' scroll-y style="height:100%;">
     <view class='content'>
       <block wx:for="{{diningTableList}}" wx:key="item">
         <!-- 空闲状态 -->
@@ -74,7 +74,7 @@
         <view>个呼叫服务</view>
       </view>
       <view class='foot-right'>
-        <button class='examine-btn'>查看</button>
+        <button class='examine-btn' bindtap='checkService'>查看</button>
       </view>
     </view>
   </view>
@@ -94,4 +94,43 @@
       <view class="btn-confirm" bindtap="onConfirm" data-status="confirm">确定</view>
     </view>
   </view>
+</view>
+<!--转台弹窗-->
+<view class="modal-mask" bindtap="hideChangeModal" catchtouchmove='true' catchtouchmove="preventTouchMove" wx:if="{{showChangeModal}}"></view>
+<view class="change-dialog" wx:if="{{showChangeModal}}">
+
+  <view class="modal-title">顾客转台</view>
+
+  <scroll-view class='change-scroll' scroll-y>
+    <view class="change-content">
+      <view class='seat-list'>
+        <block wx:for-items="{{seatingNumbers}}" wx:key="item">
+          <view class="seat-name" style="{{item.select?'color:#04AAF9':'color:#000'}}" data-index="{{index}}" bindtap='changeTableSeat'>{{item.name}}桌</view>
+        </block>
+      </view>
+      <view class='line'></view>
+      <view class='seat-list'>
+        <block wx:for-items="{{regionList}}" wx:key="item">
+          <view class='seat-name' style="{{item.select?'color:#04AAF9':'color:#000'}}" data-index="{{index}}" bindtap='changeTableRegion'>{{item.name}}</view>
+      </block>
+      </view>
+      <view class='list'>
+        <block wx:for="{{changeTableList}}" wx:key="item">
+          <view class='change-item-table' style="{{item.select?'background-color:#91C653':'background-color:#04AAF9'}}" bindtap='changeTable' data-index="{{index}}">
+            <view class='table-content'>
+              <text class='table-number'>{{item.name}}</text>
+              <view class='table-line'></view>
+              <text class='table-text'>空闲/{{item.seating_number}}人</text>
+            </view>
+          </view>
+        </block>
+      </view>
+
+    </view>
+  </scroll-view>
+  <view class="modal-footer">
+    <view class="btn-cancel" bindtap="onChangeCancel" data-status="cancel">取消</view>
+    <view class="btn-confirm" bindtap="onChangeConfirm" data-status="confirm">确定</view>
+  </view>
+
 </view>

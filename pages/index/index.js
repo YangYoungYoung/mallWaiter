@@ -8,13 +8,18 @@ var shopId = wx.getStorageSync('shopId');
 Page({
   data: {
     showModal: false, //就餐人数弹窗是否显示
+    showChangeModal: false, //转桌弹窗是否显示
     peopleNumber: '', //实际就餐人数
     seatNumber: 0, //桌位人数
     regionList: [], //区域集合
     diningTableList: [], //桌位集合
+    seatingNumbers: [], //座位数集合
     show: false, //action是否显示
     index: 0, //桌位索引
     pickerIndex: 0, //区域选择器索引
+    changeSeatNumber: 0, //转桌时选择的几人桌
+    changeRegion: 0,
+    changeTableList: [], //转桌查询的桌位集合
     actions: [{
         id: 1,
         name: '开台',
@@ -143,8 +148,8 @@ Page({
           // console.log("获取的信息是：", res.data.msg.diningTableList);
           // var regionList = res.data.msg.regionList;
           var diningTableList = res.data.msg;
-          if (diningTableList.length==0){
-            common.showTip('暂无数据','loading');
+          if (diningTableList.length == 0) {
+            common.showTip('暂无数据', 'loading');
           }
           that.setData({
             // regionList: regionList,
@@ -170,7 +175,7 @@ Page({
 
     let url = "api/shop/" + shopId + "/diningTable/queryParamList"
     var params = {
-      shopId:shopId
+      shopId: shopId
     }
     let method = "GET";
     wx.showLoading({
@@ -186,10 +191,23 @@ Page({
             id: 0,
             name: "全部"
           }
+          var seatArray = [];
+          for (var i = 0; i < seatingNumbers.length; i++) {
+            let obj = {
+              id: seatingNumbers[i],
+              name: seatingNumbers[i] + '人'
+            }
+            seatArray.push(obj);
+          }
+          let seat = {
+            id: 0,
+            name: "全部"
+          }
+          seatArray.unshift(seat);
           regionList.unshift(obj);
           that.setData({
             regionList: regionList,
-            seatingNumbers: seatingNumbers
+            seatingNumbers: seatArray
           })
           // that.onShow();
         } else {
@@ -295,17 +313,35 @@ Page({
       case 6:
         //当前为顾客转台
         console.log("当前为顾客转台");
+        that.showChangeModalFunction();
+        let index = that.data.index;
+        let diningTableList = that.data.diningTableList;
+        let fromDiningTableId = diningTableList[index].id;
+        //查询当前可用的桌位
+        let changeSeatNumber = that.data.changeSeatNumber;
+        let changeRegion = that.data.changeRegion;
+        that.changeQueryTable(0, 0);
+
+        that.setData({
+          fromDiningTableId: fromDiningTableId
+        })
+
         break;
       case 7:
         //当前为订单详情
         console.log("当前为订单详情");
+        wx.navigateTo({
+          url: '../order/order',
+        })
         break;
       case 8:
         //当前为清台
         console.log("当前为清台");
         break;
+      default:
+        break;
     }
-
+    that.onClose();
   },
 
   //弹出action
@@ -314,6 +350,16 @@ Page({
     var status = e.currentTarget.dataset.status;
     //点击桌位的索引
     var index = e.currentTarget.dataset.index;
+    //获取orderId
+    let diningTableList = that.data.diningTableList;
+    let orderId = diningTableList[index].orderId;
+    let diningTableId = diningTableList[index].id;
+    console.log('diningTableId is: ', diningTableId);
+    wx.setStorageSync('diningTableId', diningTableId);
+    if (orderId != null) {
+      console.log("orderId is:", orderId);
+      wx.setStorageSync('orderId', orderId);
+    }
     that.setData({
       index: index
     })
@@ -447,6 +493,218 @@ Page({
   inputChange: function(e) {
     this.setData({
       peopleNumber: e.detail.value
+    })
+  },
+
+  //隐藏转桌弹窗
+  hideChangeModal: function() {
+    this.setData({
+      showChangeModal: false
+    })
+  },
+  //显示转桌弹窗
+  showChangeModalFunction: function() {
+    console.log('显示转桌弹窗');
+    this.setData({
+      showChangeModal: true
+    })
+  },
+  //转桌时点击不同的桌位数
+  changeTableSeat: function(event) {
+    let that = this;
+    //要查询的区域
+    let changeRegion = that.data.changeRegion;
+    let chagenSeatIndex = event.currentTarget.dataset.index;
+    let seatingArray = that.data.seatingNumbers;
+    for (var i = 0; i < seatingArray.length; i++) {
+      if (i == chagenSeatIndex) {
+        seatingArray[i].select = true
+      } else {
+        seatingArray[i].select = false
+      }
+    }
+    let changeSeatNumber = seatingArray[chagenSeatIndex].id; //选择几人桌
+
+    console.log("chagenSeatIndex is :", chagenSeatIndex);
+    that.changeQueryTable(changeSeatNumber, changeRegion);
+    that.setData({
+      seatingNumbers: seatingArray,
+      changeSeatNumber: changeSeatNumber,
+
+    })
+
+  },
+  //转桌时选择不同的区域
+  changeTableRegion: function(event) {
+    let that = this;
+    //当前要查询的桌位数
+    let changeSeatNumber = that.data.changeSeatNumber;
+    let chagenSeatIndex = event.currentTarget.dataset.index;
+    let regionList = that.data.regionList;
+    for (var i = 0; i < regionList.length; i++) {
+      if (i == chagenSeatIndex) {
+        regionList[i].select = true
+      } else {
+        regionList[i].select = false
+      }
+    }
+    let changeRegion = regionList[chagenSeatIndex].id; //选择几人桌
+
+    console.log("chagenSeatIndex is :", chagenSeatIndex);
+    that.changeQueryTable(changeSeatNumber, changeRegion);
+    that.setData({
+      regionList: regionList,
+      changeRegion: changeRegion
+
+    })
+
+
+
+  },
+  //转桌查询区域桌位信息
+  changeQueryTable: function(seatNumber, pickerIndex) {
+    // var regionId = e.currentTarget.dataset.id;
+    // console.log("regionId is:", regionId);
+    var that = this;
+    var params = {};
+    var regionId = 0;
+    if (pickerIndex != 0) {
+      regionId = that.data.regionList[pickerIndex].id;
+      console.log('regionId is :', regionId);
+    }
+    //查看全部的桌位
+    if (seatNumber == 0 && pickerIndex == 0) {
+
+      params = {
+        shopId: shopId
+      }
+    }
+    //查看固定区域的所有桌位
+    else if (pickerIndex != 0 && seatNumber == 0) {
+      params = {
+        shopId: shopId,
+        regionId: regionId
+      }
+    }
+    //查看固定区域的固定桌位
+    else if (pickerIndex != 0 && seatNumber != 0) {
+      params = {
+        shopId: shopId,
+        regionId: regionId,
+        seatingNumber: seatNumber
+      }
+    }
+    //查看固定人数的桌位
+    else if (pickerIndex == 0 && seatNumber != 0) {
+      params = {
+        shopId: shopId,
+        seatingNumber: seatNumber
+      }
+    }
+
+    let url = "api/shop/" + shopId + "/diningTable/list"
+
+    let method = "GET";
+    wx.showLoading({
+        title: '加载中...',
+      }),
+      network.POST(url, params, method).then((res) => {
+        wx.hideLoading();
+        if (res.data.code == 200) {
+          // console.log("获取的信息是：", res.data.msg.diningTableList);
+          // var regionList = res.data.msg.regionList;
+          var diningTableList = res.data.msg;
+          if (diningTableList.length == 0) {
+            common.showTip('暂无数据', 'loading');
+          }
+          let changeTableList = [];
+          for (var i = 0; i < diningTableList.length; i++) {
+            if (diningTableList[i].status == 0) {
+              changeTableList.push(diningTableList[i]);
+            }
+          }
+          that.setData({
+            // regionList: regionList,
+            changeTableList: changeTableList
+          })
+          console.log('changeTableList is :...', changeTableList);
+          // return diningTableList;
+        } else {
+          var message = res.data.msg;
+          common.showTip(message, "loading");
+        }
+      }).catch((errMsg) => {
+        wx.hideLoading();
+        console.log(errMsg); //错误提示信息
+        wx.showToast({
+          title: '网络错误',
+          icon: 'loading',
+          duration: 1500,
+        })
+      });
+  },
+  //转桌时选择桌位
+  changeTable: function(event) {
+    let that = this;
+
+    let changeTableList = that.data.changeTableList;
+    let tableIndex = event.currentTarget.dataset.index;
+    console.log("tableIndex is :", tableIndex);
+    let toDiningTableId;
+    for (var i = 0; i < changeTableList.length; i++) {
+      if (i == tableIndex) {
+        toDiningTableId = changeTableList[i].id;
+        changeTableList[i].select = true;
+        console.log("changeTableList[i].select:", changeTableList[i].select);
+      } else {
+        changeTableList[i].select = false;
+      }
+    }
+    that.setData({
+      changeTableList: changeTableList,
+      toDiningTableId: toDiningTableId
+    })
+  },
+  //转桌弹窗确认按钮
+  onChangeConfirm: function() {
+    this.onChangeConnector();
+    this.hideChangeModal();
+  },
+  //转桌弹窗取消按钮
+  onChangeCancel: function() {
+    this.hideChangeModal();
+  },
+  //转桌接口
+  onChangeConnector: function() {
+    let that = this;
+    let toDiningTableId = that.data.toDiningTableId;
+    let fromDiningTableId = that.data.fromDiningTableId;
+    wx.request({
+      url: 'https://api.cmdd.tech/api/zhuanZhuo',
+
+      data: {
+        fromDiningTableId,
+        toDiningTableId
+      },
+      method: 'PUT',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      success: function(res) {
+        console.log("提交返回：" + res.data);
+        if (res.data.code == 200) {
+          common.showTip("转桌成功", 'success');
+          that.onShow();
+        }else{
+          common.showTip("转桌失败", 'loading');
+        }
+      }
+    });
+  },
+  //查看按钮监听
+  checkService:function(){
+    wx.navigateTo({
+      url: '../callService/callService',
     })
   },
 })

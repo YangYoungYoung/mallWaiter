@@ -1,0 +1,27 @@
+/* pages/serviceOrder/serviceOrder.wxss */
+@import "/pages/order/order.wxss";
+.modal-input {
+  margin-left: 20rpx;
+  margin-right: 20rpx;
+  display: flex;
+  background: #fff;
+  border: 2rpx solid #ddd;
+  border-radius: 4rpx;
+  font-size: 28rpx;
+  margin-top: 20rpx;
+}
+
+.input {
+  width: 100%;
+  height: 82rpx;
+  font-size: 28rpx;
+  line-height: 28rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  color: #333;
+}
+
+input-holder {
+  color: #666;
+  font-size: 28rpx;
+}

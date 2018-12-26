@@ -14,6 +14,11 @@ page {
   align-items: center;
 }
 
+.container noscroll {
+  height: 100%;
+  overflow: hidden;
+}
+
 .title {
   width: 100%;
   background-color: #626262;
@@ -26,20 +31,12 @@ page {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  position: fixed;  /* 固定位置 */
+  position: fixed; /* 固定位置 */
   top: 0;
   z-index: 2;
 }
 
-.region{
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  text-align: center;
-  align-items: center;
-  line-height: 100%;
-}
-.region-right{
+.region {
   height: 100%;
   display: flex;
   flex-direction: row;
@@ -48,7 +45,16 @@ page {
   line-height: 100%;
 }
 
-.radio-group{
+.region-right {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: center;
+  line-height: 100%;
+}
+
+.radio-group {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -57,11 +63,12 @@ page {
   align-items: center;
 }
 
-.radio{
+.radio {
   height: auto;
   width: 100%;
-  transform:scale(0.7);
+  transform: scale(0.7);
 }
+
 .scroll {
   width: 100%;
   align-items: center;
@@ -235,7 +242,6 @@ page {
   margin-right: 41rpx;
 }
 
-
 /* 弹窗 */
 
 .modal-mask {
@@ -265,7 +271,6 @@ page {
 
 .modal-title {
   padding-top: 30rpx;
-  
   font-size: 36rpx;
   color: #030303;
   text-align: center;
@@ -282,7 +287,6 @@ page {
   border-radius: 4rpx;
   font-size: 28rpx;
 }
-
 
 .input {
   width: 100%;
@@ -320,4 +324,79 @@ input-holder {
   width: 50%;
   color: #ec5300;
   text-align: center;
+}
+
+.change-dialog {
+  width: 686rpx;
+  height: 737rpx;
+  overflow: hidden;
+  position: fixed;
+  top: 40%;
+  left: 0;
+  z-index: 9999;
+  background: #f9f9f9;
+  margin: -210rpx 30rpx;
+  border-radius: 36rpx;
+}
+
+.change-content {
+  padding: 30rpx 22rpx;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.seat-list {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 47rpx;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.seat-name {
+  font-size: 28rpx;
+  color: black;
+  margin-left: 10rpx;
+  margin-right: 10rpx;
+}
+ 
+
+.list {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+  margin-top: 20rpx;
+}
+
+.line {
+  width: 100%;
+  height: 2rpx;
+  background-color: #d7d7d7;
+  margin-top: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.change-item-table {
+  width: 163rpx;
+  height: 155rpx;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  /* border: 1rpx solid #035c86; */
+  border-radius: 10rpx;
+  line-height: 165rpx;
+  margin-bottom: 24rpx;
+  margin-left: 26rpx;
+  margin-right: 20rpx;
+  /* background-color: #04aaf9; */
+}
+
+.change-scroll {
+  height: 570rpx;
 }

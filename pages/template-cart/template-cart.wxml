@@ -26,13 +26,16 @@
               <button class="goods-label" catchtap='showDialogBtn' data-index="{{index}}">口味</button>
               <view class="goods-price">¥ {{item.unit_price}}</view>
 
-              <view class='taste'>{{item.remark}}</view>
+              <view class='taste'>{{item.description}}</view>
               <view class="buy-num">
                 <view class="jian-btn {{item.count==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{index}}">-</view>
                 <input type="number" value="{{item.count}}" bindinput="inputNumber" data-index="{{index}}" />
                 <view class="jia-btn {{item.count==99? 'disabled' : ''}}" catchtap="jiaBtnTap" data-index="{{index}}">+</view>
               </view>
             </view>
+          </view>
+          <view class="delete-btn" data-index="{{index}}" catchtap="delItem">
+            删除
           </view>
         </view>
       </view>
@@ -54,8 +57,8 @@
       </view>
       <view class="total" hidden="{{noSelect}}">合计:¥{{totalPrice}}</view>
     </view>
-    <view class="to-wait-btn {{noSelect?'no-select':''}}" hidden="{{!saveHidden}}" bindtap="toPayOrder">等叫</view>
-    <view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!saveHidden}}" bindtap="toPayOrder">提交</view>
+    <view class="to-wait-btn {{noSelect?'no-select':''}}" hidden="{{!saveHidden}}" bindtap="dengJiao">等叫</view>
+    <view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!saveHidden}}" bindtap="toSubmitOrder">提交</view>
     <view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{saveHidden}}" bindtap="deleteSelected">删除</view>
   </view>
 </template>
