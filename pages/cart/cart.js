@@ -430,9 +430,9 @@ Page({
         console.log("提交返回：" + res.data);
         if (res.data.code == 200) {
           common.showTip("提交成功", 'success');
-          that.setData({
-            isLotteryCash: res.data.msg.isLotteryCash
-          })
+          // that.setData({
+          //   isLotteryCash: res.data.msg.isLotteryCash
+          // })
           that.navigateToPayOrder();
         }
       }
@@ -553,22 +553,22 @@ Page({
     })
   },
 
-
+//跳转到订单页面
   navigateToPayOrder: function() {
     //清除购物车库存
     wx.removeStorageSync('cartResult')
     wx.hideLoading();
     let that = this;
-    var isLotteryCash = that.data.isLotteryCash;
-    if (isLotteryCash != 1) {
-      wx.redirectTo({
-        url: "../lottery/lottery"
-      })
-    } else {
+    // var isLotteryCash = that.data.isLotteryCash;
+    // if (isLotteryCash != 1) {
+    //   wx.redirectTo({
+    //     url: "../lottery/lottery"
+    //   })
+    // } else {
       wx.redirectTo({
         url: "../order/order"
       })
-    }
+    // }
   },
 
   bindTextAreaBlur: function(e) {
@@ -636,6 +636,7 @@ Page({
         console.log("这里的结果是：" + res.data); //正确返回结果
        if(res.data.code==200){
          common.showTip('提交成功','success');
+         that.navigateToPayOrder();
        }
       }).catch((errMsg) => {
         // wx.hideLoading();

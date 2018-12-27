@@ -3,7 +3,7 @@
 // const app = getApp()
 var network = require("../../utils/network.js")
 var common = require("../../utils/common.js")
-var shopId = wx.getStorageSync('shopId');
+var shopId;
 // var name = wx.getStorageSync('name');
 Page({
   data: {
@@ -76,6 +76,7 @@ Page({
   },
 
   onLoad: function() {
+    shopId = wx.getStorageSync('shopId');
     // let that = this;
     // var seatNumber = that.data.seatNumber;
     // var pickerIndex = that.data.pickerIndex;
@@ -98,7 +99,7 @@ Page({
   //查询区域桌位信息
   queryTable: function(seatNumber, pickerIndex) {
     // var regionId = e.currentTarget.dataset.id;
-    // console.log("regionId is:", regionId);
+    console.log("shopId is:", shopId);
     var that = this;
     var params = {};
     var regionId = 0;
@@ -305,10 +306,14 @@ Page({
       case 4:
         //当前为划菜
         console.log("当前为划菜");
+        wx.navigateTo({
+          url: '../order/order',
+        })
         break;
       case 5:
         //当前为起菜
         console.log("当前为起菜");
+        that.qiCai();
         break;
       case 6:
         //当前为顾客转台
@@ -397,7 +402,33 @@ Page({
       //当前为进行中状态
       for (var i = 0; i < actions.length; i++) {
 
-        if (i == 2 || i == 3 || i == 4 || i == 5 || i == 6) {
+        if (i == 2 || i == 3 || i == 5 || i == 6) {
+          actions[i].disabled = false;
+        } else {
+          actions[i].disabled = true;
+        }
+      }
+      that.setData({
+        actions: actions
+      })
+    } else if (status == 3) {
+      //当前为加餐中状态
+      for (var i = 0; i < actions.length; i++) {
+
+        if (i == 3 || i == 5 || i == 6) {
+          actions[i].disabled = false;
+        } else {
+          actions[i].disabled = true;
+        }
+      }
+      that.setData({
+        actions: actions
+      })
+    } else {
+      //当前为等叫中状态
+      for (var i = 0; i < actions.length; i++) {
+
+        if (i == 2 || i == 4 || i == 5 || i == 6) {
           actions[i].disabled = false;
         } else {
           actions[i].disabled = true;
@@ -695,16 +726,51 @@ Page({
         if (res.data.code == 200) {
           common.showTip("转桌成功", 'success');
           that.onShow();
-        }else{
+        } else {
           common.showTip("转桌失败", 'loading');
         }
       }
     });
   },
   //查看按钮监听
-  checkService:function(){
+  checkService: function() {
     wx.navigateTo({
       url: '../callService/callService',
     })
   },
+  //起菜的方法
+  qiCai: function() {
+    let that = this;
+    let diningTableId = wx.getStorageSync('diningTableId');
+    let orderId = wx.getStorageSync('orderId');
+    let url = "api/dengJiaoQi"
+    var params = {
+      diningTableId: diningTableId,
+      // orderItemList: orderItemList,
+      operateType: 2,
+      orderId: orderId
+    }
+    let method = "PUT";
+
+    wx.showLoading({
+        title: '加载中...',
+      }),
+      network.POST(url, params, method).then((res) => {
+        wx.hideLoading();
+        console.log("这里的结果是：" + res.data); //正确返回结果
+        if (res.data.code == 200) {
+          common.showTip('起菜成功', 'success');
+          // that.navigateToPayOrder();
+          that.onShow();
+        }
+      }).catch((errMsg) => {
+        // wx.hideLoading();
+        // console.log(errMsg); //错误提示信息
+        wx.showToast({
+          title: '网络错误',
+          icon: 'loading',
+          duration: 1500,
+        })
+      });
+  }
 })

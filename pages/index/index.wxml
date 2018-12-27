@@ -63,6 +63,26 @@
             </view>
           </view>
         </block>
+        <!-- 加餐中 -->
+        <block wx:if="{{item.status==3}}">
+          <view class='item-table' style='background-color: #f6b37f;' data-index="{{index}}" bindtap='showAction' data-status='{{item.status}}'>
+            <view class='table-content'>
+              <text class='table-number'>{{item.name}}</text>
+              <view class='table-line'></view>
+              <text class='table-text'>加餐中</text>
+            </view>
+          </view>
+        </block>
+        <!-- 等叫中 -->
+        <block wx:if="{{item.status==4}}">
+          <view class='item-table' style='background-color: #91C653;' data-index="{{index}}" bindtap='showAction' data-status='{{item.status}}'>
+            <view class='table-content'>
+              <text class='table-number'>{{item.name}}</text>
+              <view class='table-line'></view>
+              <text class='table-text'>等叫中</text>
+            </view>
+          </view>
+        </block>
       </block>
     </view>
   </scroll-view>
@@ -116,7 +136,7 @@
       </view>
       <view class='list'>
         <block wx:for="{{changeTableList}}" wx:key="item">
-          <view class='change-item-table' style="{{item.select?'background-color:#91C653':'background-color:#04AAF9'}}" bindtap='changeTable' data-index="{{index}}">
+          <view class='change-item-table' style="{{item.select?'background-color:#ea6a76':'background-color:#04AAF9'}}" bindtap='changeTable' data-index="{{index}}">
             <view class='table-content'>
               <text class='table-number'>{{item.name}}</text>
               <view class='table-line'></view>

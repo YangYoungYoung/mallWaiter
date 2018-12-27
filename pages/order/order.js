@@ -9,11 +9,13 @@ Page({
   data: {
     description: '',
     show: false, //action是否显示
+    showModal: false,
     status: '',
     totalPrice: 0, //总价
     quantity: 0, //总菜品数
     tagColor: '#0FB0F9',
     fromService: 0,
+    returnReason: '', //退菜原因
     actions: [{
         id: 1,
         name: '划菜',
@@ -62,7 +64,7 @@ Page({
       }),
       network.POST(url, params, method).then((res) => {
         wx.hideLoading();
-        if (res.data.msg != null) {
+      if (res.data.msg.loi != null && res.data.msg.loi.length!=0) {
 
           // console.log("这里的结果是：" + res.data.msg[0].loi[0].p.name); //正确返回结果
           var loi = res.data.msg.loi;
@@ -158,6 +160,12 @@ Page({
         })
       });
   },
+  //加餐
+  add: function() {
+    wx.navigateTo({
+      url: '../menu/menu',
+    })
+  },
   //返回首页
   toIndex: function() {
     wx.redirectTo({
@@ -191,6 +199,7 @@ Page({
       case 2:
         //当前为退菜
         console.log("当前为退菜");
+        that.showDialogBtn();
         that.onClose();
         break;
       default:
@@ -204,23 +213,150 @@ Page({
     console.log('当前的index:', index);
     that.setData({
       show: true,
-      index:index
+      index: index
     })
   },
   //划菜
   serving: function() {
     let that = this;
-    
+
     // var orderId = wx.getStorageSync("orderId");
     let index = that.data.index;
     let loi = that.data.loi;
     let orderItemId = loi[index].id;
+    let orderItem = {
+      id: orderItemId,
+      status_id:3 //划菜
+    }
+    console.log('orderItemId is:', orderItemId);
+    wx.request({
+      url: 'https://api.cmdd.tech/api/orderItem?id='+orderItemId+'&status_id=3',
+
+      // data: {
+        // id: orderItemId,
+      // orderItem: orderItem
+        // id: orderItemId,
+        // status_id: 3 //划菜
+      // },
+      method: 'GET',
+      header: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      success: function (res) {
+        console.log("提交返回：" + res.data);
+        if (res.data.code == 200) {
+          common.showTip("提交成功", 'success');
+          // that.setData({
+          //   isLotteryCash: res.data.msg.isLotteryCash
+          // })
+          that.onShow();;
+        }
+      }
+    });
+
+
+
+    // let orderItem = {
+    //   id: orderItemId,
+    //   status_id: 3 //划菜
+    // }
+    // let url = "/api/order-product/" + orderItemId
+    // let method = "PUT"
+    // var params = {
+    //   // phone: phone,
+    //   id: orderItemId,
+    //   orderItem: orderItem
+    // }
+    // wx.showLoading({
+    //     title: '加载中...',
+    //   }),
+    //   network.POST(url, params, method).then((res) => {
+    //     wx.hideLoading();
+    //     if (res.data.code == 200) {
+    //       var msg = res.data.msg;
+    //       console.log("退菜返回的是:", msg);
+    //       // that.setData({
+    //       //   totalPrice: msg
+    //       // })
+    //       that.onShow();
+    //     }
+
+    //   }).catch((errMsg) => {
+    //     wx.hideLoading();
+    //     console.log(errMsg); //错误提示信息
+    //     wx.showToast({
+    //       title: '网络错误',
+    //       icon: 'loading',
+    //       duration: 1500,
+    //     })
+    //   });
+  },
+  /**
+   * 弹窗
+   */
+  showDialogBtn: function() {
+    this.setData({
+      showModal: true
+    })
+  },
+  /**
+   * 弹出框蒙层截断touchmove事件
+   */
+  preventTouchMove: function() {},
+  /**
+   * 隐藏模态对话框
+   */
+  hideModal: function() {
+    this.setData({
+      showModal: false
+    });
+  },
+  /**
+   * 对话框取消按钮点击事件
+   */
+  onCancel: function() {
+    this.hideModal();
+  },
+  /**
+   * 对话框确认按钮点击事件
+   */
+  onConfirm: function() {
+    this.returnDish();
+  },
+  //获取输入框的值
+  inputChange: function(e) {
+
+    let text = e.detail.value;
+    console.log('输入框里的值是：', text);
+    this.setData({
+      returnReason: text
+    })
+  },
+  //退菜
+  returnDish: function() {
+    let that = this;
+
+    // var orderId = wx.getStorageSync("orderId");
+    let index = that.data.index;
+    let loi = that.data.loi;
+    let orderItemId = loi[index].id;
+    let returnReason = that.data.returnReason;
+    if (returnReason == '') {
+      common.showTip('请填写退菜原因', 'loading');
+      // wx.showToast({
+      //   title: '请填写退菜原因',
+      //   icon: 'loading',
+      //   duration: 1000
+      // })
+      return;
+    }
     console.log('orderItemId is:', orderItemId);
     let orderItem = {
       id: orderItemId,
-      status_id:3
+      status_id: 6, //退菜
+      descirption: returnReason
     }
-    let url = "/api/order-product/" + orderItemId
+    let url = "/api/orderItem" + orderItemId
     let method = "PUT"
     var params = {
       // phone: phone,
@@ -234,13 +370,15 @@ Page({
         wx.hideLoading();
         if (res.data.code == 200) {
           var msg = res.data.msg;
-          console.log("退菜返回的是:",msg);
+          console.log("退菜返回的是:", msg);
+          common.showTip('成功', 'success');
           // that.setData({
           //   totalPrice: msg
           // })
           that.onShow();
-        }
 
+        }
+        this.hideModal();
       }).catch((errMsg) => {
         wx.hideLoading();
         console.log(errMsg); //错误提示信息
@@ -250,7 +388,5 @@ Page({
           duration: 1500,
         })
       });
-  },
-  //退菜
-  
+  }
 })

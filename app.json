@@ -1,11 +1,12 @@
 {
   "pages":[
+    "pages/login/login",
     "pages/order/order",
+    "pages/index/index",
     "pages/callService/callService",
     "pages/serviceOrder/serviceOrder",
-    "pages/index/index",
     "pages/menu/menu",
-    "pages/login/login",
+    
     "pages/search/search",
     "pages/cart/cart"
     
@@ -14,7 +15,7 @@
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#0FB0F9",
-    "navigationBarTitleText": "WeChat",
+    "navigationBarTitleText": "点餐系统",
     "navigationBarTextStyle":"whites"
   }
 }
