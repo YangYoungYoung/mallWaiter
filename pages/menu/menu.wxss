@@ -29,6 +29,7 @@
   height: 54px;
   line-height: 14px;
   padding: 0 12px;
+  text-align: center;
 }
 
 .goods .menu-wrapper .menu-item:current {
@@ -58,7 +59,8 @@
   width: 56px;
   vertical-align: middle;
   position: relative;
-  font-size: 12px;
+  font-size: 26rpx;
+  font-weight: bold;
   border-bottom: 1px solid rgba(7, 17, 27, 0.1);
 }
 
@@ -91,8 +93,8 @@
 
 .food-item {
   box-sizing: border-box;
-  width: 168rpx;
-  height: 119rpx;
+  width: 170rpx;
+  height: 122rpx;
   text-align: left;
   align-items: center;
   display: flex;
@@ -101,7 +103,7 @@
   border-radius: 10rpx;
   /* line-height: 165rpx; */
   margin-bottom: 13rpx;
-  margin-left: 24rpx;
+  margin-left: 20rpx;
   background-color: #0fb0f9;
 }
 
@@ -125,7 +127,7 @@
   width: 90%;
   margin-top: 10rpx;
   color: white;
-  font-size: 25rpx;
+  font-size: 26rpx;
   margin-left: 25rpx;
   margin-right: 25rpx;
 }
@@ -133,7 +135,7 @@
 .food-price {
   width: 100%;
   margin-left: 30rpx;
-  font-size: 24rpx;
+  font-size: 25rpx;
   margin-top: 5rpx;
   color: white;
 }

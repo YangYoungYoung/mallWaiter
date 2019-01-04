@@ -1,6 +1,6 @@
 /* pages/serviceOrder/serviceOrder.wxss */
 @import "/pages/order/order.wxss";
-.modal-input {
+/* .modal-input {
   margin-left: 20rpx;
   margin-right: 20rpx;
   display: flex;
@@ -21,7 +21,7 @@
   color: #333;
 }
 
-input-holder {
+.input-holder {
   color: #666;
   font-size: 28rpx;
-}
+} */

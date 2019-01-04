@@ -1,6 +1,7 @@
 // pages/search/search.js
 var network = require("../../utils/network.js")
 var common = require("../../utils/common.js")
+var shopId ;
 Page({
 
   /**
@@ -9,7 +10,7 @@ Page({
   data: {
     showModalStatus: false, //是否显示遮罩和对话框
     goods: [],
-    parentIndex: 0, //goods[]索引
+    // parentIndex: 0, //goods[]索引
     index: 0, //productList[]的索引
     remark: '',
     num: 1, //某道菜的数量
@@ -86,35 +87,36 @@ Page({
     that.setData({
       searchText: searchText
     })
-    var shopId = wx.getStorageSync("shopId");
-    let url = "api/weiXin/getProductList"
-    var params = {
-      shopId: shopId
-    }
-    let method = "GET";
+    shopId = wx.getStorageSync("shopId");
+    this.search();
+    // let url = "api/weiXin/getProductList"
+    // var params = {
+    //   shopId: shopId
+    // }
+    // let method = "GET";
 
-    wx.showLoading({
-      title: '加载中...',
-    })
-    network.POST(url, params, method).then((res) => {
-      wx.hideLoading();
-      console.log("返回值是：" + res.data.msg);
-      if (res.data.code == 200) {
-        var goods = res.data.msg;
-        that.setData({
-          goods: goods
-        })
-      }
+    // wx.showLoading({
+    //   title: '加载中...',
+    // })
+    // network.POST(url, params, method).then((res) => {
+    //   wx.hideLoading();
+    //   console.log("返回值是：" + res.data.msg);
+    //   if (res.data.code == 200) {
+    //     var goods = res.data.msg;
+    //     that.setData({
+    //       goods: goods
+    //     })
+    //   }
 
-    }).catch((errMsg) => {
-      wx.hideLoading();
-      console.log(errMsg); //错误提示信息
-      wx.showToast({
-        title: '网络错误',
-        icon: 'loading',
-        duration: 1500,
-      })
-    });
+    // }).catch((errMsg) => {
+    //   wx.hideLoading();
+    //   console.log(errMsg); //错误提示信息
+    //   wx.showToast({
+    //     title: '网络错误',
+    //     icon: 'loading',
+    //     duration: 1500,
+    //   })
+    // });
   },
 
 
@@ -235,11 +237,11 @@ Page({
   showDetail: function(e) {
     let that = this;
     let index = e.currentTarget.dataset.index;
-    let parentIndex = e.currentTarget.dataset.parentindex;
-    let productList = that.data.goods[parentIndex].productList;
+    // let parentIndex = e.currentTarget.dataset.parentindex;
+    let productList = that.data.goods[index];
     that.setData({
       index: index, //productList[]的索引
-      parentIndex: parentIndex, //goods[]索引
+      // parentIndex: parentIndex, //goods[]索引
       productList: productList
     })
     that.showModal();
@@ -255,7 +257,7 @@ Page({
   submit: function() {
     let that = this;
     //获取当前索引
-    let parentIndex = that.data.parentIndex;
+    // let parentIndex = that.data.parentIndex;
     let index = that.data.index;
     //获取菜品数量
     let num = that.data.num;
@@ -264,10 +266,11 @@ Page({
     let remark = that.data.remark;
     let goods = that.data.goods;
     //更改数量
-    goods[parentIndex].productList[index].count = num;
-    var product = goods[parentIndex].productList[index];
+    goods[index].count = num;
+    var product = goods[index];
     product.count = num;
-    product.remark = remark;
+    product.description = remark;
+    product.active = true;
     let id = product.id;
     console.log("product price is :", product.unit_price);
     //购物车数组
@@ -303,11 +306,11 @@ Page({
   revocation: function() {
     let that = this;
     //获取当前索引
-    let parentIndex = that.data.parentIndex;
+    // let parentIndex = that.data.parentIndex;
     let index = that.data.index;
     let goods = that.data.goods;
-    goods[parentIndex].productList[index].count = 0;
-    var id = goods[parentIndex].productList[index].id;
+    goods[index].count = 0;
+    var id = goods[index].id;
     //购物车数组
     let cartArray = that.data.cartArray;
     for (let i = 0; i < cartArray.length; i++) {
@@ -358,5 +361,39 @@ Page({
     that.setData({
       searchText:event.detail
     })
+    that.search();
+  },
+  //搜索接口
+  search:function(){
+    let that = this;
+    let name = that.data.searchText
+    let url = "api/shop/"+shopId+'/product/list'
+    var params = {
+      name: name
+    }
+    let method = "GET";
+
+    wx.showLoading({
+      title: '加载中...',
+    })
+    network.POST(url, params, method).then((res) => {
+      wx.hideLoading();
+      console.log("返回值是：" + res.data.msg);
+      if (res.data.code == 200) {
+        var goods = res.data.msg;
+        that.setData({
+          goods: goods
+        })
+      }
+
+    }).catch((errMsg) => {
+      wx.hideLoading();
+      console.log(errMsg); //错误提示信息
+      wx.showToast({
+        title: '网络错误',
+        icon: 'loading',
+        duration: 1500,
+      })
+    });
   }
 })

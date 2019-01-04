@@ -7,10 +7,12 @@ var shopId;
 // var name = wx.getStorageSync('name');
 Page({
   data: {
+    interval: "", //定时器
     showModal: false, //就餐人数弹窗是否显示
     showChangeModal: false, //转桌弹窗是否显示
     peopleNumber: '', //实际就餐人数
     seatNumber: 0, //桌位人数
+    pickerSeatIndex: 0,
     regionList: [], //区域集合
     diningTableList: [], //桌位集合
     seatingNumbers: [], //座位数集合
@@ -20,6 +22,7 @@ Page({
     changeSeatNumber: 0, //转桌时选择的几人桌
     changeRegion: 0,
     changeTableList: [], //转桌查询的桌位集合
+    serviceNumber: 0, //呼叫服务数量
     actions: [{
         id: 1,
         name: '开台',
@@ -75,7 +78,22 @@ Page({
     that.onShow();
   },
 
+
+  //选择不同的餐位数来查询桌位
+  bindPickerSeatChange: function(e) {
+    let that = this;
+    // console.log('picker发送选择改变，携带值为', e.detail.value);
+    var id = that.data.seatingNumbers[e.detail.value].id;
+    console.log('picker发送选择改变，e.detail.value携带值为', e.detail.value);
+    that.setData({
+      pickerSeatIndex: e.detail.value,
+      seatNumber: id
+    })
+    that.onShow();
+  },
+
   onLoad: function() {
+    wx.removeStorageSync('cartResult');
     shopId = wx.getStorageSync('shopId');
     // let that = this;
     // var seatNumber = that.data.seatNumber;
@@ -84,6 +102,7 @@ Page({
     // console.log("seatNumber is:", seatNumber);
     // this.queryTable(seatNumber, pickerIndex);
     this.queryParamList();
+
   },
 
   onShow: function() {
@@ -94,6 +113,8 @@ Page({
     console.log("seatNumber is:", seatNumber);
     that.queryTable(seatNumber, pickerIndex);
     // this.queryParamList();
+    that.getService();
+    that.setIntervalGetService();
   },
 
   //查询区域桌位信息
@@ -342,6 +363,7 @@ Page({
       case 8:
         //当前为清台
         console.log("当前为清台");
+        that.clearDiningTable();
         break;
       default:
         break;
@@ -389,7 +411,7 @@ Page({
       for (var i = 0; i < actions.length; i++) {
 
         if (i == 1 || i == 5 || i == 7) {
-          console.log("dangqina ");
+          // console.log("dangqina ");
           actions[i].disabled = false;
         } else {
           actions[i].disabled = true;
@@ -402,7 +424,7 @@ Page({
       //当前为进行中状态
       for (var i = 0; i < actions.length; i++) {
 
-        if (i == 2 || i == 3 || i == 5 || i == 6) {
+        if (i == 2 || i == 3 || i == 5 || i == 6 || i == 7) {
           actions[i].disabled = false;
         } else {
           actions[i].disabled = true;
@@ -415,7 +437,7 @@ Page({
       //当前为加餐中状态
       for (var i = 0; i < actions.length; i++) {
 
-        if (i == 3 || i == 5 || i == 6) {
+        if (i == 3 || i == 5 || i == 6 || i == 7) {
           actions[i].disabled = false;
         } else {
           actions[i].disabled = true;
@@ -428,7 +450,7 @@ Page({
       //当前为等叫中状态
       for (var i = 0; i < actions.length; i++) {
 
-        if (i == 2 || i == 4 || i == 5 || i == 6) {
+        if (i == 2 || i == 4 || i == 5 || i == 6 || i == 7) {
           actions[i].disabled = false;
         } else {
           actions[i].disabled = true;
@@ -772,5 +794,125 @@ Page({
           duration: 1500,
         })
       });
+  },
+  //清桌
+  clearDiningTable: function() {
+    let that = this;
+    let diningTableId = wx.getStorageSync('diningTableId');
+
+    let url = "api/clearDiningTable/diningTable/" + diningTableId
+    var params = {
+      // diningTableId: diningTableId,
+      // orderItemList: orderItemList,
+      // operateType: 2,
+      // orderId: orderId
+    }
+    let method = "PUT";
+
+    wx.showLoading({
+        title: '加载中...',
+      }),
+      network.POST(url, params, method).then((res) => {
+        wx.hideLoading();
+        console.log("这里的结果是：" + res.data); //正确返回结果
+        if (res.data.code == 200) {
+          common.showTip('清台成功', 'success');
+          // that.navigateToPayOrder();
+
+        }
+        that.onShow();
+      }).catch((errMsg) => {
+        // wx.hideLoading();
+        // console.log(errMsg); //错误提示信息
+        wx.showToast({
+          title: '网络错误',
+          icon: 'loading',
+          duration: 1500,
+        })
+      });
+  },
+  //循环请求获取呼叫服务
+  setIntervalGetService: function() {
+    let that = this;
+    that.init(that);
+    //计时器
+    let interval = setInterval(function() {
+      //循环执行代码
+      that.getService();
+    }, 60000)
+    that.setData({
+      interval: interval
+    })
+  },
+  //清除计时器
+  clearTimeInterval: function(that) {
+    var interval = that.data.interval;
+    clearInterval(interval)
+  },
+  /**
+   * 初始化计时器
+   */
+  init: function(that) {
+
+    var interval = ""
+    that.clearTimeInterval(that)
+    that.setData({
+      interval: interval,
+    })
+  },
+
+  //获取呼叫服务
+  getService: function() {
+    let that = this;
+    // let shopId = wx.getStorageSync('shopId');
+    let url = "api/shop/" + shopId + "/call-service/list"
+    let method = "GET";
+    let params = {
+      id: shopId
+    }
+    wx.showLoading({
+        title: '加载中...',
+      }),
+
+      network.POST(url, params, method).then((res) => {
+        wx.hideLoading();
+        if (res.data.code == 200) {
+          // console.log("获取的信息是：", res.data.msg.diningTableList);
+          // var regionList = res.data.msg.regionList;
+          let serviceList = res.data.msg;
+          if (serviceList.length > 0) {
+            console.log('呼叫服务的个数是:', serviceList.length);
+            that.setData({
+              serviceNumber: serviceList.length
+            })
+          }
+        }
+      }).catch((errMsg) => {
+        wx.hideLoading();
+        console.log(errMsg); //错误提示信息
+        wx.showToast({
+          title: '网络错误',
+          icon: 'loading',
+          duration: 1500,
+        })
+      });
+  },
+  /**
+   * 生命周期函数--监听页面卸载
+   * 退出本页面时停止计时器
+   */
+  onUnload: function() {
+    var that = this;
+    that.clearTimeInterval(that)
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   * 在后台运行时停止计时器
+   */
+  onHide: function() {
+    var that = this;
+    that.clearTimeInterval(that)
   }
+
 })

@@ -5,11 +5,16 @@
       <view class='list-item' bindtap='onShowAciton' data-index='{{index}}'>
         <view class='item-left'>
           <view class='item-name'>{{item.p.name}}</view>
-          <van-tag custom-class='taste-tag' color='{{tagColor}}' size="large" type="primary">{{item.status}}</van-tag>
+          <van-tag custom-class='taste-tag' color='{{item.tagColor}}' size="large" type="primary">{{item.status}}</van-tag>
         </view>
         <view class='item-center'>
-          <view class='taste-text'></view>
-          <view class='return-dishes'></view>
+
+          <block wx:if='{{item.status_id==6}}'>
+            <view class='return-dishes'>退菜原因：{{item.description}}</view>
+          </block>
+          <block wx:else>
+            <view class='taste-text'>{{item.description}}</view>
+          </block>
         </view>
         <view class='item-right'>
           <view class='item-price'>￥{{item.p.unit_price}}X{{item.quantity}}</view>
@@ -17,13 +22,29 @@
       </view>
       <view class='line'></view>
     </block>
-    <block wx:if="{{description}}">
+    <!-- <block wx:if="{{description}}">
       <view class='remark'>
         <view class='remark-title'>订单备注:</view>
         <i-input i-class="remark-text" disabled='true' value="{{description}}" type="textarea" mode="wrapped" />
       </view>
-    </block>
+    </block> -->
+    <!-- <block wx:if="{{loi}}">
+      <view class='remark'>
+        <view class='remark-title'>订单备注:</view>
+        
+        <view class="remark-input">
+          <input placeholder-class="remark-input-holder" disabled='true' type="text" maxlength="50" class="remark-input-input" value='{{description}}'></input>
+        </view>
+      </view>
+    </block> -->
   </scroll-view>
+  <block wx:if="{{description}}">
+    <view class='remark'>
+      <van-cell-group>
+        <van-field value="{{description}}" disabled='true' label="备注" type="textarea" autosize border="{{ false }}" />
+      </van-cell-group>
+    </view>
+  </block>
 
   <view class='footer'>
     <view class='foot-left'>

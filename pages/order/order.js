@@ -71,9 +71,9 @@ Page({
           // var totalPrice = res.data.msg[0].real_pay;
           that.getOrderPrice();
           console.log("当前总价为：" + that.data.totalPrice);
-          if (res.data.msg.description) {
+        if (res.data.msg.openTableRemark) {
             that.setData({
-              description: res.data.msg.description
+              description: res.data.msg.openTableRemark
             })
           }
           // that.setData({
@@ -87,15 +87,19 @@ Page({
             switch (loi[i].status_id) {
               case 0:
                 loi[i].status = '待接单';
+                loi[i].tagColor= '#0FB0F9';
                 break;
               case 1:
                 loi[i].status = '未开做';
+                loi[i].tagColor = '#0FB0F9';
                 break;
               case 2:
                 loi[i].status = '已开做';
+                loi[i].tagColor = '#0FB0F9';
                 break;
               case 3:
                 loi[i].status = '已上菜';
+                loi[i].tagColor = '#DD5347';
                 break;
               case 4:
                 loi[i].status = '已结算';
@@ -105,6 +109,11 @@ Page({
                 break;
               case 6:
                 loi[i].status = '退菜';
+                loi[i].tagColor = '#F09148';
+                break;
+                default:
+                loi[i].status = '待接单';
+                loi[i].tagColor = '#0FB0F9';
                 break;
             }
           }
@@ -231,16 +240,17 @@ Page({
     console.log('orderItemId is:', orderItemId);
     wx.request({
       url: 'https://api.cmdd.tech/api/orderItem?id='+orderItemId+'&status_id=3',
+      // url: 'https://api.cmdd.tech/api/orderItem',
 
-      // data: {
-        // id: orderItemId,
-      // orderItem: orderItem
-        // id: orderItemId,
-        // status_id: 3 //划菜
-      // },
+      data: {
+      //   id: orderItemId,
+      // orderItem: orderItem,
+        id: orderItemId,
+        status_id: 3 //划菜
+      },
       method: 'GET',
       header: {
-        'content-type': 'application/x-www-form-urlencoded'
+        'content-type': 'application/json'
       },
       success: function (res) {
         console.log("提交返回：" + res.data);
@@ -354,14 +364,15 @@ Page({
     let orderItem = {
       id: orderItemId,
       status_id: 6, //退菜
-      descirption: returnReason
+      description: returnReason
     }
-    let url = "/api/orderItem" + orderItemId
-    let method = "PUT"
+    let url = "api/orderItem"
+    let method = "GET"
     var params = {
       // phone: phone,
       id: orderItemId,
-      orderItem: orderItem
+      status_id: 6, //退菜
+      description: returnReason
     }
     wx.showLoading({
         title: '加载中...',
@@ -372,9 +383,11 @@ Page({
           var msg = res.data.msg;
           console.log("退菜返回的是:", msg);
           common.showTip('成功', 'success');
-          // that.setData({
-          //   totalPrice: msg
-          // })
+          loi[index].returnReason = returnReason;
+          console.log("loi[index].returnReason :", loi[index].returnReason);
+          that.setData({
+            loi: loi
+          })
           that.onShow();
 
         }

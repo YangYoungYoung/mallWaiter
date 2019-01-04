@@ -87,6 +87,7 @@ page {
   line-height: 42rpx;
   padding-left: 5rpx;
   padding-right: 5rpx;
+  margin-right: 51rpx;
 }
 
 .area-item {
@@ -232,10 +233,10 @@ page {
 }
 
 .examine-btn {
-  width: 123rpx;
-  height: 49rpx;
+  width: 126rpx;
+  height: 55rpx;
   text-align: center;
-  line-height: 49rpx;
+  line-height: 55rpx;
   font-size: 25rpx;
   background-color: #0fb0f9;
   color: #fff;

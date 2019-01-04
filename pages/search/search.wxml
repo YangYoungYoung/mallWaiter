@@ -15,15 +15,15 @@
     </scroll-view>
   </view> -->
   <scroll-view scroll-y="true" scroll-into-view="{{toView}}" class="foods-wrapper" style='margin-top:10rpx;'>
-    <view wx:for="{{goods}}" wx:key='id' class="food-list food-list-hook" wx:for-index="parentIndex">
+    <!-- <view wx:for="{{goods}}" wx:key='id' class="food-list food-list-hook" wx:for-index="parentIndex"> -->
       <view class='food-content'>
-        <view wx:for="{{item.productList}}" wx:key='id' wx:for-item="productList" class="food-item" style="{{productList.count>0?'background-color: #2131f4;':'background-color: #0fb0f9'}}" data-food="{{productList}}" bindtap="showDetail" data-parentIndex="{{parentIndex}}" data-index='{{index}}'>
-          <view class='food-name'>{{productList.name}}</view>
-          <view class='food-price'>￥{{productList.unit_price}}</view>
-          <view class="reddot" wx:if="{{productList.count> 0}}">{{productList.count}}</view>
+        <view wx:for="{{goods}}" wx:key='id' wx:for-item="item" class="food-item" style="{{productList.count>0?'background-color: #2131f4;':'background-color: #0fb0f9'}}" data-food="{{productList}}" bindtap="showDetail" data-parentIndex="{{parentIndex}}" data-index='{{index}}'>
+          <view class='food-name'>{{item.name}}</view>
+          <view class='food-price'>￥{{item.unit_price}}</view>
+          <view class="reddot" wx:if="{{productList.count> 0}}">{{item.count}}</view>
         </view>
       </view>
-    </view>
+    <!-- </view> -->
   </scroll-view>
 
   <!--shopCart-->
@@ -59,16 +59,16 @@
 
     <view class='commodity-title'>
       <view class='comm-title-left'>
-        <text class='comm-title-name'>{{productList[index].name}}</text>
-        <text class='comm-title-price'>￥{{productList[index].unit_price}}</text>
+        <text class='comm-title-name'>{{productList.name}}</text>
+        <text class='comm-title-price'>￥{{productList.unit_price}}</text>
       </view>
       <view class='comm-title-right'>
         <image class='comm-close' src='../images/close_btn1.png' bindtap='hideModal'></image>
-        <van-stepper custom-class="stepper" value="{{ productList[index].count}}" bind:change="onNumberChange" />
+        <van-stepper custom-class="stepper" value="{{ productList.count}}" bind:change="onNumberChange" />
       </view>
     </view>
     <text class='guige-text' style='margin-top: 100rpx;'>规格</text>
-    <input class='guige-input' type="text" bindinput="guigeChange" value='{{productList[index].unit}}'></input>
+    <input class='guige-input' type="text" bindinput="guigeChange" value='{{productList.unit}}'></input>
     <text class='guige-text' style='margin-top: 28rpx;'>口味</text>
 
     <view class='taste'>

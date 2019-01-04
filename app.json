@@ -1,16 +1,13 @@
 {
   "pages":[
     "pages/login/login",
-    "pages/order/order",
     "pages/index/index",
+    "pages/menu/menu",
+    "pages/order/order",
+    "pages/cart/cart",
     "pages/callService/callService",
     "pages/serviceOrder/serviceOrder",
-    "pages/menu/menu",
-    
-    "pages/search/search",
-    "pages/cart/cart"
-    
-    
+    "pages/search/search"
   ],
   "window":{
     "backgroundTextStyle":"light",

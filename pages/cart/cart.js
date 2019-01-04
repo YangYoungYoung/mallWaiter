@@ -380,7 +380,7 @@ Page({
           // order_id: "25717603011921208",
           product_id: shopList[i].id, //菜品id
           quantity: shopList[i].count,
-          status_id: 0
+          status_id: 1
         }
         orderItemList.push(temp);
       }
@@ -413,13 +413,13 @@ Page({
     //     })
     //   });
 
-    var description = that.data.textAreaBlur;
+    var operateRemark = that.data.textAreaBlur;
     wx.request({
-      url: 'https://api.cmdd.tech/api/orderItemList',
+      url: 'https://api.cmdd.tech/api/orderItem/List',
 
       data: {
         orderItemList,
-        description
+        operateRemark
       },
       method: 'POST',
       header: {

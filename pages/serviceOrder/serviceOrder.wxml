@@ -4,7 +4,7 @@
     <block wx:for="{{loi}}" wx:key="id" wx:for-item='item'>
       <view class='list-item' bindtap='onShowAciton' data-index='{{index}}'>
         <view class='item-left'>
-          <view class='item-name'>{{item.p.name}}</view>
+          <view class='item-name'>{{item.productName}}</view>
           <!-- <van-tag custom-class='taste-tag' color='{{tagColor}}' size="large" type="primary">{{status}}</van-tag> -->
         </view>
         <view class='item-center'>
@@ -12,23 +12,28 @@
           <view class='return-dishes'></view>
         </view>
         <view class='item-right'>
-          <view class='item-price'>￥{{item.p.unit_price}}X{{item.quantity}}</view>
+          <view class='item-price'>￥{{item.isPromotionPrice}}X{{item.quantity}}</view>
         </view>
       </view>
       <view class='line'></view>
     </block>
 
   </scroll-view>
-  <!-- <block wx:if="{{description}}"> -->
-  <view class='remark'>
-    <view class='remark-title'>订单备注:</view>
-    <!-- <input class="remark-text" disabled='true' value="1222222" type="textarea" mode="wrapped" /> -->
-    <view class="modal-input">
-      <input placeholder-class="input-holder" disabled='true' type="text" maxlength="50" class="input" value='{{remark}}'></input>
+  <!-- <block wx:if="{{!description}}">
+    <view class='remark'>
+      <view class='remark-title'>订单备注:</view>
+      <view class="modal-input">
+        <input placeholder-class="input-holder"  type="text" maxlength="50" class="input" value='{{description}}'></input>
+      </view>
     </view>
-  </view>
-  <!-- </block> -->
-
+  </block> -->
+  <block wx:if="{{description}}">
+    <view class='remark'>
+      <van-cell-group>
+        <van-field value="{{description}}" disabled='true' label="备注" type="textarea" autosize border="{{ false }}" />
+      </van-cell-group>
+    </view>
+  </block>
   <view class='footer'>
     <view class='foot-left'>
       <view class='left-text'>共 </view>

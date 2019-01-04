@@ -7,7 +7,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    quantity:0,
+    totalPrice:0,
+    loi:[]
   },
 
   /**
@@ -16,12 +18,13 @@ Page({
   onLoad: function (options) {
     if (options.orderId!=undefined){
       var orderId = options.orderId;
+    }else{
+      common.showTip('当前无数据','loading');
+      return;
     }
-   
     let that = this;
     let shopId = wx.getStorageSync('shopId');
     let url = "api/orderItem/list"
-
     let method = "GET";
     let params = {
       shopId: shopId,
@@ -35,11 +38,12 @@ Page({
         wx.hideLoading();
         if (res.data.code == 200) {
           console.log("获取的信息是：", res.data.msg);
-          // var regionList = res.data.msg.regionList;
+          var loi = res.data.msg;
           // let serviceList = res.data.msg;
-          // that.setData({
-          //   serviceList: serviceList
-          // })
+          that.setData({
+            loi: loi
+          })
+          that.totalPrice();
         } else {
           var message = res.data.msg;
           common.showTip(message, "loading");
@@ -54,6 +58,53 @@ Page({
         })
       });
   },
+  //提交订单
+  add:function(){
+    let that = this;
+    let orderItemList = that.data.loi;
+    for(var i=0;i<loi.length;i++){
+      orderItemList.status_id= 1;
+    }
+    var description = that.data.textAreaBlur;
+    wx.request({
+      url: 'https://api.cmdd.tech/api/orderItem/List',
 
+      data: {
+        orderItemList,
+        description
+      },
+      method: 'POST',
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        console.log("提交返回：" + res.data);
+        if (res.data.code == 200) {
+          common.showTip("提交成功", 'success');
+          // that.setData({
+          //   isLotteryCash: res.data.msg.isLotteryCash
+          // })
+          // that.navigateToPayOrder();
+        }
+      }
+    });
+  },
+
+  //计算菜品总数和总价
+  totalPrice:function(){
+    let that = this;
+    let loi = that.data.loi;
+    let totalCount = 0;
+    let totalPrice = 0;
+    for(var i = 0;i<loi.length;i++){
+      console.log('loi[i].quantity:', loi[i].quantity);
+      totalCount += loi[i].quantity;
+      totalPrice += parseFloat(loi[i].isPromotionPrice) * loi[i].quantity;
+    }
+    that.setData({
+      quantity: totalCount,
+      totalPrice: totalPrice
+    })
+  }
   
 })

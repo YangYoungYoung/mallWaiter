@@ -9,7 +9,12 @@
           <text class='item-content'>服务内容:{{item.description}}</text>
         </view>
         <view>
-          <button class='take-order' bindtap='receiving' data-index="{{index}}">接单</button>
+          <block wx:if='{{item.service_type==1}}'>
+            <button class='take-order' disabled='{{item.disabled}}' style="{{item.disabled?'background-color: #CECECF;':'background-color: #337ab7;'}}" bindtap='receiving' data-index="{{index}}">接单</button>
+          </block>
+          <block wx:else if="{{item.service_type==1}}">
+            <button class='take-order' disabled='{{item.disabled}}' bindtap='accept' data-index="{{index}}">确认</button>
+          </block>
         </view>
       </view>
       <view class='line'></view>
